@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
         return res.status(500).json({ error: 'API key is not set' });
     }
 
-    const prompt = `Design a modern, professional logo for the domain '${domain}' that reflects its potential niche or use case. Use bold colors and clean lines.`;
+    const prompt = `Design a modern logo for '${domain}' reflecting its niche.`;
 
     try {
         const response = await fetch('https://api.openai.com/v1/images/generations', {
@@ -29,11 +29,14 @@ module.exports = async (req, res) => {
             })
         });
 
+        const responseText = await response.text();
+        console.log('Image API Response:', responseText); // Debug
+
         if (!response.ok) {
-            throw new Error('Image generation failed');
+            throw new Error(`Image generation failed: ${responseText}`);
         }
 
-        const data = await response.json();
+        const data = JSON.parse(responseText);
         const imageUrl = data.data[0].url;
         res.status(200).json({ imageUrl });
     } catch (error) {
