@@ -118,6 +118,7 @@
         <section id="results" class="py-6" style="display: none;">
             <h2 class="text-3xl font-bold text-center mb-6"><i class="fas fa-file-alt mr-2"></i>Your Domain Report</h2>
             <div id="report-content" class="space-y-4 card-grid">
+                <div id="domain-image" class="card text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading Image...</div>
                 <div id="estimated-value" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="best-use-case" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="seo-audit" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
@@ -180,35 +181,50 @@
 
         async function fetchAndDisplayReport(domain) {
             try {
+                // Core data
                 const coreResponse = await fetch('/api/getDomainInfo', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ domain })
                 });
-                const responseText = await coreResponse.text();
-                console.log('Raw Core Response:', responseText); // Debug
+                const coreText = await coreResponse.text();
+                console.log('Raw Core Response:', coreText);
 
                 if (!coreResponse.ok) {
-                    throw new Error(`API request failed: ${responseText}`);
+                    throw new Error(`Core API failed: ${coreText}`);
                 }
 
-                let coreData;
-                try {
-                    coreData = JSON.parse(responseText);
-                } catch (jsonError) {
-                    throw new Error(`Invalid JSON: ${responseText}`);
-                }
-
-                console.log('Parsed Core Data:', coreData); // Debug
-                if (coreData.error) {
-                    throw new Error(coreData.error);
-                }
-
+                const coreData = JSON.parse(coreText);
+                console.log('Parsed Core Data:', coreData);
                 const parsedData = parseResponse(coreData.content);
+                console.log('Parsed Report Data:', parsedData);
                 displayCoreData(parsedData, domain);
+
+                // Image
+                const imageResponse = await fetch('/api/getDomainImage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain })
+                });
+                const imageText = await imageResponse.text();
+                console.log('Raw Image Response:', imageText);
+
+                if (!imageResponse.ok) {
+                    console.warn('Image API failed, using fallback:', imageText);
+                    displayFallbackImage(domain);
+                } else {
+                    const imageData = JSON.parse(imageText);
+                    console.log('Parsed Image Data:', imageData);
+                    if (imageData.imageUrl) {
+                        displayImage(imageData.imageUrl);
+                    } else {
+                        displayFallbackImage(domain);
+                    }
+                }
             } catch (error) {
                 console.error('Fetch Error:', error);
                 displayError(error.message);
+                displayFallbackImage(domain);
             }
         }
 
@@ -216,7 +232,7 @@
             if (!response) return { error: 'No response from API' };
             const lines = response.split('\n');
             let data = {
-                estimatedValue: '$500-$1,000 (default estimate)',
+                estimatedValue: '$500-$1,000 (default)',
                 bestUseCase: '',
                 buildPrompt: '',
                 seoAudit: '',
@@ -263,17 +279,17 @@
                 } else if (line.startsWith('Relevant APIs:')) {
                     currentSection = 'apis';
                 } else if (currentSection === 'bestUseCase') {
-                    data.bestUseCase += ' ' + line;
+                    data.bestUseCase += '\n' + line;
                 } else if (currentSection === 'buildPrompt') {
-                    data.buildPrompt += ' ' + line;
+                    data.buildPrompt += '\n' + line;
                 } else if (currentSection === 'seoAudit') {
-                    data.seoAudit += ' ' + line;
+                    data.seoAudit += '\n' + line;
                 } else if (currentSection === 'marketTrends') {
-                    data.marketTrends += ' ' + line;
+                    data.marketTrends += '\n' + line;
                 } else if (currentSection === 'domainHistory') {
-                    data.domainHistory += ' ' + line;
+                    data.domainHistory += '\n' + line;
                 } else if (currentSection === 'competition') {
-                    data.competition += ' ' + line;
+                    data.competition += '\n' + line;
                 } else if (currentSection === 'metrics' && line.includes(':')) {
                     const [key, value] = line.split(':').map(part => part.trim());
                     data.metrics[key] = value;
@@ -293,35 +309,37 @@
         }
 
         function displayCoreData(data, domain) {
+            console.log('Rendering Data:', data);
             if (data.error) {
                 displayError(data.error);
                 return;
             }
+
             document.getElementById('estimated-value').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-dollar-sign mr-2"></i>Estimated Value</h3>
                 <p class="mt-2">${data.estimatedValue}</p>
             `;
             document.getElementById('best-use-case').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-lightbulb mr-2"></i>Best Use Case</h3>
-                <p class="mt-2">${data.bestUseCase || 'Explore potential uses.'}</p>
+                <p class="mt-2 whitespace-pre-wrap">${data.bestUseCase || 'Explore potential uses.'}</p>
                 <h4 class="text-md font-bold mt-4"><i class="fas fa-code mr-2"></i>Build It Prompt</h4>
                 <pre class="mt-2">${data.buildPrompt || 'Copy this into an AI studio like Replit or Firebase.'}</pre>
             `;
             document.getElementById('seo-audit').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-search mr-2"></i>SEO Audit</h3>
-                <p class="mt-2">${data.seoAudit || 'Optimize with keywords and backlinks.'}</p>
+                <p class="mt-2 whitespace-pre-wrap">${data.seoAudit || 'Optimize with keywords and backlinks.'}</p>
             `;
             document.getElementById('market-trends').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-chart-bar mr-2"></i>Market Trends</h3>
-                <p class="mt-2">${data.marketTrends || 'Research industry shifts.'}</p>
+                <p class="mt-2 whitespace-pre-wrap">${data.marketTrends || 'Research industry shifts.'}</p>
             `;
             document.getElementById('domain-history').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-history mr-2"></i>Domain History</h3>
-                <p class="mt-2">${data.domainHistory || `Check <a href="https://whois.domaintools.com/${domain}" target="_blank">WHOIS</a> or <a href="https://archive.org/web/" target="_blank">archive.org</a>.`}</p>
+                <p class="mt-2 whitespace-pre-wrap">${data.domainHistory || `Check <a href="https://whois.domaintools.com/${domain}" target="_blank">WHOIS</a> or <a href="https://archive.org/web/" target="_blank">archive.org</a>.`}</p>
             `;
             document.getElementById('competition').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-chart-line mr-2"></i>Competition Analysis</h3>
-                <p class="mt-2">${data.competition || 'Analyze competitors.'}</p>
+                <p class="mt-2 whitespace-pre-wrap">${data.competition || 'Analyze competitors.'}</p>
             `;
             let metricsHtml = '<h3 class="text-lg font-bold"><i class="fas fa-tachometer-alt mr-2"></i>Domain Metrics</h3><ul class="mt-2">';
             for (const [key, value] of Object.entries(data.metrics)) {
@@ -378,10 +396,18 @@
             apisHtml += '</ul>';
             document.getElementById('apis').innerHTML = apisHtml;
 
+            // Reattach download event listener
+            document.getElementById('download-report').onclick = null; // Clear old listener
             document.getElementById('download-report').addEventListener('click', () => {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 let yOffset = 10;
+
+                const imageElement = document.getElementById('domain-image').querySelector('img');
+                if (imageElement) {
+                    doc.addImage(imageElement.src, 'PNG', 10, yOffset, 50, 25);
+                    yOffset += 35;
+                }
                 doc.text(`Domain: ${domain}`, 10, yOffset);
                 yOffset += 10;
 
@@ -393,6 +419,35 @@
 
                 doc.save('domain_squeeze_report.pdf');
             });
+        }
+
+        function displayImage(imageUrl) {
+            document.getElementById('domain-image').innerHTML = `
+                <h3 class="text-lg font-bold"><i class="fas fa-image mr-2"></i>Domain Visual</h3>
+                <img src="${imageUrl}" alt="Domain Image" class="mt-2 mx-auto w-full max-w-xs rounded">
+            `;
+        }
+
+        function displayFallbackImage(domain) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#f7fafc' : '#2d3748';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '40px "Font Awesome 5 Free"';
+            ctx.fillStyle = 'var(--primary)';
+            ctx.textAlign = 'center';
+            ctx.fillText('\uf0ac', 50, 60);
+            ctx.font = '20px Poppins';
+            ctx.fillStyle = 'var(--text-color)';
+            ctx.fillText(domain, 120, 50);
+            const imageUrl = canvas.toDataURL();
+
+            document.getElementById('domain-image').innerHTML = `
+                <h3 class="text-lg font-bold"><i class="fas fa-image mr-2"></i>Domain Visual</h3>
+                <img src="${imageUrl}" alt="Fallback Domain Image" class="mt-2 mx-auto w-full max-w-xs rounded">
+            `;
         }
 
         function displayError(message) {
@@ -407,9 +462,9 @@
 
         function getApiLink(apiName) {
             const apiLinks = {
-                'Google Maps API': 'https://developers.google.com/maps',
-                'Twitter API': 'https://developer.twitter.com',
-                'OpenWeather API': 'https://openweathermap.org/api'
+                'EIA API': 'https://www.eia.gov/opendata/',
+                'Weather API': 'https://openweathermap.org/api',
+                'Social Media API': 'https://developer.twitter.com'
             };
             return apiLinks[apiName] || `https://www.google.com/search?q=${encodeURIComponent(apiName)}`;
         }
