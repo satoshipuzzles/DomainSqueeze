@@ -87,6 +87,13 @@
         a:hover {
             color: var(--secondary);
         }
+        pre {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: #e2e8f0;
+        }
         @media (min-width: 768px) {
             .card-grid {
                 display: grid;
@@ -235,6 +242,7 @@
             let data = {
                 estimatedValue: '$500-$1,000 (default estimate based on typical domain metrics)',
                 bestUseCase: '',
+                buildPrompt: '',
                 seoAudit: '',
                 marketTrends: '',
                 domainHistory: '',
@@ -255,6 +263,9 @@
                 } else if (line.startsWith('Best Use Case:')) {
                     currentSection = 'bestUseCase';
                     data.bestUseCase = line.replace('Best Use Case:', '').trim();
+                } else if (line.startsWith('Build It Prompt:')) {
+                    currentSection = 'buildPrompt';
+                    data.buildPrompt = line.replace('Build It Prompt:', '').trim();
                 } else if (line.startsWith('SEO Audit:')) {
                     currentSection = 'seoAudit';
                     data.seoAudit = line.replace('SEO Audit:', '').trim();
@@ -277,6 +288,8 @@
                     currentSection = 'apis';
                 } else if (currentSection === 'bestUseCase') {
                     data.bestUseCase += ' ' + line;
+                } else if (currentSection === 'buildPrompt') {
+                    data.buildPrompt += ' ' + line;
                 } else if (currentSection === 'seoAudit') {
                     data.seoAudit += ' ' + line;
                 } else if (currentSection === 'marketTrends') {
@@ -312,6 +325,8 @@
             document.getElementById('best-use-case').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-lightbulb mr-2"></i>Best Use Case</h3>
                 <p class="mt-2">${data.bestUseCase || 'Explore potential uses based on your niche.'}</p>
+                <h4 class="text-md font-bold mt-4"><i class="fas fa-code mr-2"></i>Build It Prompt</h4>
+                <pre class="mt-2">${data.buildPrompt || 'Copy this into an AI studio like Replit or Firebase to build your platform.'}</pre>
             `;
             document.getElementById('seo-audit').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-search mr-2"></i>SEO Audit</h3>
