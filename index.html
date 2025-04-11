@@ -97,22 +97,7 @@
             </form>
         </section>
         <!-- Results Section -->
-        <section id="results" class="py-10 max-w-5xl mx-auto" style="display: none;">
-            <h2 class="text-3xl font-bold text-center mb-8 animate__animated animate__fadeIn"><i class="fas fa-file-alt mr-2"></i>Domain Analysis Report</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div id="estimated-value" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
-                <div id="best-use-case" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
-                <div id="competition" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
-                <div id="metrics" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
-                <div id="buyers" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
-                <div id="partnerships" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
-                <div id="apis" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
-            </div>
-            <div class="text-center mt-8">
-                <button id="download-report" class="mr-4"><i class="fas fa-download mr-2"></i>Download Report</button>
-                <button id="back-to-form" class="bg-gray-500"><i class="fas fa-arrow-left mr-2"></i>Analyze Another Domain</button>
-            </div>
-        </section>
+        <section id="results" class="py-10 max-w-5xl mx-auto" style="display: none;"></section>
         <!-- Loading Indicator -->
         <div id="loading" class="text-center py-16" style="display: none;">
             <i class="fas fa-spinner fa-spin fa-3x text-[var(--primary-color)]"></i>
@@ -147,12 +132,6 @@
             domainForm.classList.add('animate__animated', 'animate__fadeIn');
         });
 
-        document.getElementById('back-to-form').addEventListener('click', () => {
-            resultsSection.style.display = 'none';
-            domainForm.style.display = 'block';
-            domainForm.classList.add('animate__animated', 'animate__fadeIn');
-        });
-
         // Form submission
         domainForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -169,7 +148,7 @@
             try {
                 const response = await getDomainInfo(domain);
                 const data = parseResponse(response);
-                displayResults(data);
+                displayResults(data, domain);
             } catch (error) {
                 alert('An error occurred: ' + error.message);
                 loadingDiv.style.display = 'none';
@@ -260,29 +239,67 @@
             return data;
         }
 
-        // Display results
-        function displayResults(data) {
-            loadingDiv.style.display = 'none';
+        // Generate domain logo
+        function generateDomainLogo(domain) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
 
-            // Estimated Value
+            // Background
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#f3f4f6' : '#1f2937';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Icon (globe)
+            ctx.font = '40px "Font Awesome 5 Free"';
+            ctx.fillStyle = 'var(--primary-color)';
+            ctx.textAlign = 'center';
+            ctx.fillText('\uf0ac', 50, 60); // Font Awesome globe icon
+
+            // Domain text
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'var(--text-color)';
+            ctx.fillText(domain, 120, 50);
+
+            return canvas.toDataURL();
+        }
+
+        // Display results
+        function displayResults(data, domain) {
+            loadingDiv.style.display = 'none';
+            const logoUrl = generateDomainLogo(domain);
+
+            resultsSection.innerHTML = `
+                <h2 class="text-3xl font-bold text-center mb-8 animate__animated animate__fadeIn"><i class="fas fa-file-alt mr-2"></i>Domain Analysis Report</h2>
+                <div class="text-center mb-8"><img src="${logoUrl}" alt="${domain} Logo" class="mx-auto"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div id="estimated-value" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                    <div id="best-use-case" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                    <div id="competition" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                    <div id="metrics" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                    <div id="buyers" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
+                    <div id="partnerships" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
+                    <div id="apis" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
+                </div>
+                <div class="text-center mt-8">
+                    <button id="download-report" class="mr-4"><i class="fas fa-download mr-2"></i>Download Report</button>
+                    <button id="back-to-form" class="bg-gray-500"><i class="fas fa-arrow-left mr-2"></i>Analyze Another Domain</button>
+                </div>
+            `;
+
+            // Populate report sections
             document.getElementById('estimated-value').innerHTML = `
                 <h3 class="text-xl font-bold"><i class="fas fa-dollar-sign mr-2"></i>Estimated Value</h3>
                 <p class="mt-2">${data.estimatedValue || 'N/A'}</p>
             `;
-
-            // Best Use Case
             document.getElementById('best-use-case').innerHTML = `
                 <h3 class="text-xl font-bold"><i class="fas fa-lightbulb mr-2"></i>Best Use Case</h3>
                 <p class="mt-2">${data.bestUseCase || 'N/A'}</p>
             `;
-
-            // Competition Analysis
             document.getElementById('competition').innerHTML = `
                 <h3 class="text-xl font-bold"><i class="fas fa-chart-line mr-2"></i>Competition Analysis</h3>
                 <p class="mt-2">${data.competition || 'N/A'}</p>
             `;
-
-            // Metrics
             let metricsHtml = '<h3 class="text-xl font-bold"><i class="fas fa-tachometer-alt mr-2"></i>Domain Metrics</h3><ul class="mt-2">';
             for (const [key, value] of Object.entries(data.metrics)) {
                 metricsHtml += `<li title="${getMetricExplanation(key)}">${key}: ${value}</li>`;
@@ -290,7 +307,6 @@
             metricsHtml += '</ul>';
             document.getElementById('metrics').innerHTML = metricsHtml;
 
-            // Potential Buyers
             let buyersHtml = '<h3 class="text-xl font-bold"><i class="fas fa-users mr-2"></i>Potential Buyers</h3>';
             if (data.buyers.length > 0) {
                 buyersHtml += `
@@ -320,7 +336,6 @@
             }
             document.getElementById('buyers').innerHTML = buyersHtml;
 
-            // Potential Partnerships
             let partnershipsHtml = '<h3 class="text-xl font-bold"><i class="fas fa-handshake mr-2"></i>Potential Partnerships</h3>';
             if (data.partnerships.length > 0) {
                 partnershipsHtml += `
@@ -350,7 +365,6 @@
             }
             document.getElementById('partnerships').innerHTML = partnershipsHtml;
 
-            // Relevant APIs
             let apisHtml = '<h3 class="text-xl font-bold"><i class="fas fa-plug mr-2"></i>Relevant APIs</h3><ul class="mt-2">';
             data.apis.forEach(api => {
                 apisHtml += `<li><strong>${api.api}:</strong> ${api.description}</li>`;
@@ -358,8 +372,33 @@
             apisHtml += '</ul>';
             document.getElementById('apis').innerHTML = apisHtml;
 
+            // Event listeners
+            document.getElementById('download-report').addEventListener('click', () => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                let yOffset = 10;
+
+                doc.addImage(logoUrl, 'PNG', 10, yOffset, 50, 25);
+                yOffset += 35;
+                doc.text(`Domain: ${domain}`, 10, yOffset);
+                yOffset += 10;
+
+                ['estimated-value', 'best-use-case', 'competition', 'metrics', 'buyers', 'partnerships', 'apis'].forEach(id => {
+                    const text = document.getElementById(id).innerText;
+                    doc.text(text, 10, yOffset);
+                    yOffset += text.split('\n').length * 10 + 10;
+                });
+
+                doc.save('domain_squeeze_report.pdf');
+            });
+
+            document.getElementById('back-to-form').addEventListener('click', () => {
+                resultsSection.style.display = 'none';
+                domainForm.style.display = 'block';
+                domainForm.classList.add('animate__animated', 'animate__fadeIn');
+            });
+
             resultsSection.style.display = 'block';
-            resultsSection.classList.add('animate__animated', 'animate__fadeIn');
         }
 
         // Metric explanations
@@ -371,26 +410,6 @@
             };
             return explanations[metric] || 'No explanation available.';
         }
-
-        // Download report as PDF
-        document.getElementById('download-report').addEventListener('click', () => {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let yOffset = 10;
-
-            doc.text('Domain Squeeze Report', 10, yOffset);
-            yOffset += 10;
-            doc.text(`Domain: ${document.getElementById('domain').value}`, 10, yOffset);
-            yOffset += 10;
-
-            ['estimated-value', 'best-use-case', 'competition', 'metrics', 'buyers', 'partnerships', 'apis'].forEach(id => {
-                const text = document.getElementById(id).innerText;
-                doc.text(text, 10, yOffset);
-                yOffset += text.split('\n').length * 10 + 10;
-            });
-
-            doc.save('domain_squeeze_report.pdf');
-        });
     </script>
 </body>
 </html>
