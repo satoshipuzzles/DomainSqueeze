@@ -200,7 +200,7 @@
 
             domainForm.style.display = 'none';
             resultsSection.style.display = 'block';
-            fetchAndDisplayReport(domain);
+            await fetchAndDisplayReport(domain);
         });
 
         // Domain validation
@@ -211,33 +211,46 @@
 
         // Fetch and display report incrementally
         async function fetchAndDisplayReport(domain) {
-            // Core data
-            const coreResponse = await fetch('/api/getDomainInfo', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ domain })
-            });
-            const coreData = await coreResponse.json();
-            const parsedData = parseResponse(coreData.content);
-            displayCoreData(parsedData, domain);
-
-            // Image (with fallback)
             try {
+                // Core data
+                const coreResponse = await fetch('/api/getDomainInfo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain })
+                });
+                if (!coreResponse.ok) {
+                    const errorText = await coreResponse.text();
+                    throw new Error(`Core data fetch failed: ${errorText}`);
+                }
+                const coreData = await coreResponse.json();
+                console.log('Core Data Response:', coreData); // Debug
+                const parsedData = parseResponse(coreData.content);
+                displayCoreData(parsedData, domain);
+
+                // Image
                 const imageResponse = await fetch('/api/getDomainImage', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ domain })
                 });
+                if (!imageResponse.ok) {
+                    const errorText = await imageResponse.text();
+                    console.error('Image fetch failed with:', errorText);
+                    throw new Error(`Image fetch failed: ${errorText}`);
+                }
                 const imageData = await imageResponse.json();
+                console.log('Image Data Response:', imageData); // Debug
                 displayImage(imageData.imageUrl);
             } catch (error) {
-                console.error('Image fetch failed:', error);
-                displayFallbackImage(domain);
+                console.error('Error in fetchAndDisplayReport:', error);
+                displayError(error.message);
+                displayFallbackImage(domain); // Fallback for image
             }
         }
 
         // Parse core response
         function parseResponse(response) {
+            if (!response) return { error: 'No response received' };
             const lines = response.split('\n');
             let data = {
                 estimatedValue: '$500-$1,000 (default estimate based on typical domain metrics)',
@@ -318,6 +331,10 @@
 
         // Display core data
         function displayCoreData(data, domain) {
+            if (data.error) {
+                displayError(data.error);
+                return;
+            }
             document.getElementById('estimated-value').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-dollar-sign mr-2"></i>Estimated Value</h3>
                 <p class="mt-2">${data.estimatedValue}</p>
@@ -451,6 +468,17 @@
             document.getElementById('domain-image').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-image mr-2"></i>Domain Visual</h3>
                 <img src="${imageUrl}" alt="Fallback Domain Image" class="mt-2 mx-auto w-full max-w-xs rounded">
+            `;
+        }
+
+        // Display error
+        function displayError(message) {
+            document.getElementById('report-content').innerHTML = `
+                <div class="card text-center">
+                    <h3 class="text-lg font-bold"><i class="fas fa-exclamation-triangle mr-2"></i>Error</h3>
+                    <p class="mt-2">${message}</p>
+                    <p>Please try again or contact support.</p>
+                </div>
             `;
         }
 
