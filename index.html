@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Squeeze</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --background-color: #121212;
+            --text-color: #ffffff;
+            --primary-color: #bb86fc;
+            --secondary-color: #03dac6;
+        }
+        .light-mode {
+            --background-color: #ffffff;
+            --text-color: #121212;
+            --primary-color: #6200ee;
+            --secondary-color: #018786;
+        }
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--primary-color);
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 2rem 0;
+        }
+        label {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        input {
+            padding: 0.5rem;
+            margin: 0.5rem 0;
+            width: 80%;
+            max-width: 300px;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        #results {
+            margin: 2rem;
+            padding: 1rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+        }
+        #results h2 {
+            margin-top: 0;
+        }
+        #results div {
+            margin: 0.5rem 0;
+        }
+        #loading {
+            text-align: center;
+            font-size: 1.2rem;
+            margin: 2rem;
+        }
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            header button {
+                margin-top: 0.5rem;
+            }
+            form {
+                width: 90%;
+            }
+            input {
+                width: 100%;
+            }
+            #results {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Domain Squeeze</h1>
+        <button id="theme-toggle">Toggle Theme</button>
+    </header>
+    <main>
+        <form id="domain-form">
+            <label for="domain">Enter your domain name:</label>
+            <input type="text" id="domain" name="domain" required placeholder="e.g., example.com">
+            <button type="submit">Get Estimate</button>
+        </form>
+        <div id="results" style="display: none;">
+            <h2>Results</h2>
+            <div id="estimated-value"></div>
+            <div id="best-use-case"></div>
+            <div id="who-to-sell-to"></div>
+            <div id="domain-metrics"></div>
+            <button id="download-report">Download Report</button>
+        </div>
+        <div id="loading" style="display: none;">Loading...</div>
+    </main>
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+        });
+
+        // Form submission
+        const form = document.getElementById('domain-form');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const domain = document.getElementById('domain').value;
+
+            // Validate domain
+            if (!validateDomain(domain)) {
+                alert('Please enter a valid domain name (e.g., example.com).');
+                return;
+            }
+
+            // Show loading, hide results
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            try {
+                const response = await getDomainInfo(domain);
+                displayResults(response);
+            } catch (error) {
+                alert('An error occurred: ' + error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+
+        // Domain validation
+        function validateDomain(domain) {
+            const regex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
+            return regex.test(domain);
+        }
+
+        // Fetch domain info from API route
+        async function getDomainInfo(domain) {
+            const response = await fetch('/api/getDomainInfo', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ domain })
+            });
+
+            if (!response.ok) {
+                throw new Error('API request failed');
+            }
+
+            const data = await response.json();
+            return data.content;
+        }
+
+        // Display results
+        function displayResults(response) {
+            const lines = response.split('\n');
+            let estimatedValue = '';
+            let bestUseCase = '';
+            let whoToSellTo = '';
+            let domainMetrics = '';
+            let currentSection = '';
+
+            lines.forEach(line => {
+                if (line.startsWith('Estimated Value:')) {
+                    currentSection = 'estimatedValue';
+                    estimatedValue += line.replace('Estimated Value:', '').trim() + ' ';
+                } else if (line.startsWith('Best Use Case:')) {
+                    currentSection = 'bestUseCase';
+                    bestUseCase += line.replace('Best Use Case:', '').trim() + ' ';
+                } else if (line.startsWith('Who to Sell To:')) {
+                    currentSection = 'whoToSellTo';
+                    whoToSellTo += line.replace('Who to Sell To:', '').trim() + ' ';
+                } else if (line.startsWith('Domain Metrics:')) {
+                    currentSection = 'domainMetrics';
+                } else if (currentSection && line.trim()) {
+                    if (currentSection === 'estimatedValue') estimatedValue += line.trim() + ' ';
+                    else if (currentSection === 'bestUseCase') bestUseCase += line.trim() + ' ';
+                    else if (currentSection === 'whoToSellTo') whoToSellTo += line.trim() + ' ';
+                    else if (currentSection === 'domainMetrics') domainMetrics += line.trim() + ' ';
+                }
+            });
+
+            document.getElementById('estimated-value').innerText = `Estimated Value: ${estimatedValue.trim()}`;
+            document.getElementById('best-use-case').innerText = `Best Use Case: ${bestUseCase.trim()}`;
+            document.getElementById('who-to-sell-to').innerText = `Who to Sell To: ${whoToSellTo.trim()}`;
+            document.getElementById('domain-metrics').innerText = `Domain Metrics: ${domainMetrics.trim()}`;
+            document.getElementById('results').style.display = 'block';
+        }
+
+        // Download report as PDF
+        const downloadButton = document.getElementById('download-report');
+        downloadButton.addEventListener('click', () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text('Domain Squeeze Report', 10, 10);
+            doc.text(`Domain: ${document.getElementById('domain').value}`, 10, 20);
+            doc.text(document.getElementById('estimated-value').innerText, 10, 30);
+            doc.text(document.getElementById('best-use-case').innerText, 10, 40);
+            doc.text(document.getElementById('who-to-sell-to').innerText, 10, 50);
+            doc.text(document.getElementById('domain-metrics').innerText, 10, 60);
+            doc.save('domain_report.pdf');
+        });
+    </script>
+</body>
+</html>
