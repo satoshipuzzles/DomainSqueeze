@@ -7,7 +7,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -47,10 +46,6 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
             margin-bottom: 1rem;
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-4px);
         }
         button {
             background-color: var(--primary);
@@ -59,12 +54,11 @@
             border-radius: 8px;
             border: none;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
+            transition: background-color 0.2s;
             font-family: 'Poppins', sans-serif;
         }
         button:hover {
             background-color: var(--secondary);
-            transform: scale(1.05);
         }
         table {
             width: 100%;
@@ -104,47 +98,26 @@
     </style>
 </head>
 <body class="bg-[var(--bg-color)] text-[var(--text-color)]">
-    <header class="p-4 flex justify-between items-center animate__animated animate__fadeIn">
+    <header class="p-4 flex justify-between items-center">
         <h1 class="text-2xl font-bold"><i class="fas fa-globe mr-2"></i>Domain Squeeze</h1>
         <button id="theme-toggle"><i class="fas fa-moon mr-2"></i>Theme</button>
     </header>
     <main class="container mx-auto px-4 py-6">
-        <!-- Landing Page -->
         <section id="hero" class="text-center py-12">
-            <h2 class="text-4xl md:text-5xl font-bold mb-4 animate__animated animate__fadeIn">Turn Your Domain into Gold</h2>
-            <p class="text-lg md:text-xl mb-6 animate__animated animate__fadeIn animate__delay-1s">Unlock hidden value with AI-powered insights—find the best use case, buyers, and growth strategies for your domain.</p>
-            <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s"><i class="fas fa-rocket mr-2"></i>Analyze Your Domain</button>
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="card animate__animated animate__fadeIn animate__delay-3s">
-                    <i class="fas fa-brain fa-2x mb-4 text-[var(--primary)]"></i>
-                    <h3 class="text-lg font-bold">Deep Analysis</h3>
-                    <p>AI-driven reports tailored to your domain’s potential.</p>
-                </div>
-                <div class="card animate__animated animate__fadeIn animate__delay-4s">
-                    <i class="fas fa-users fa-2x mb-4 text-[var(--primary)]"></i>
-                    <h3 class="text-lg font-bold">Buyers & Partners</h3>
-                    <p>Connect with companies eager to invest.</p>
-                </div>
-                <div class="card animate__animated animate__fadeIn animate__delay-5s">
-                    <i class="fas fa-chart-line fa-2x mb-4 text-[var(--primary)]"></i>
-                    <h3 class="text-lg font-bold">Growth Strategies</h3>
-                    <p>Actionable SEO and monetization plans.</p>
-                </div>
-            </div>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4">Turn Your Domain into Gold</h2>
+            <p class="text-lg md:text-xl mb-6">Unlock hidden value with AI-powered insights.</p>
+            <button id="get-started" class=""><i class="fas fa-rocket mr-2"></i>Analyze Your Domain</button>
         </section>
-        <!-- Form Section -->
         <section id="domain-form" class="py-6" style="display: none;">
-            <form class="max-w-md mx-auto animate__animated animate__fadeIn">
+            <form class="max-w-md mx-auto">
                 <label for="domain" class="block mb-2 text-lg"><i class="fas fa-globe mr-2"></i>Enter Your Domain</label>
                 <input type="text" id="domain" class="w-full p-3 rounded bg-[var(--card-bg)] text-[var(--text-color)] border border-[var(--primary)]" placeholder="e.g., example.com" required>
                 <button type="submit" class="mt-4 w-full"><i class="fas fa-search mr-2"></i>Get Insights</button>
             </form>
         </section>
-        <!-- Results Section -->
         <section id="results" class="py-6" style="display: none;">
-            <h2 class="text-3xl font-bold text-center mb-6 animate__animated animate__fadeIn"><i class="fas fa-file-alt mr-2"></i>Your Domain Report</h2>
+            <h2 class="text-3xl font-bold text-center mb-6"><i class="fas fa-file-alt mr-2"></i>Your Domain Report</h2>
             <div id="report-content" class="space-y-4 card-grid">
-                <div id="domain-image" class="card text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading Image...</div>
                 <div id="estimated-value" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="best-use-case" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="seo-audit" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
@@ -163,7 +136,6 @@
         </section>
     </main>
     <script>
-        // Theme toggle
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
@@ -172,7 +144,6 @@
                 : '<i class="fas fa-moon mr-2"></i>Theme';
         });
 
-        // Navigation
         const getStartedButton = document.getElementById('get-started');
         const domainForm = document.getElementById('domain-form');
         const resultsSection = document.getElementById('results');
@@ -188,7 +159,6 @@
             domainForm.style.display = 'block';
         });
 
-        // Form submission
         domainForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const domain = document.getElementById('domain').value;
@@ -203,57 +173,50 @@
             await fetchAndDisplayReport(domain);
         });
 
-        // Domain validation
         function validateDomain(domain) {
             const regex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z]{2,}$/;
             return regex.test(domain);
         }
 
-        // Fetch and display report incrementally
         async function fetchAndDisplayReport(domain) {
             try {
-                // Core data
                 const coreResponse = await fetch('/api/getDomainInfo', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ domain })
                 });
+                const responseText = await coreResponse.text();
+                console.log('Raw Core Response:', responseText); // Debug
+
                 if (!coreResponse.ok) {
-                    const errorText = await coreResponse.text();
-                    throw new Error(`Core data fetch failed: ${errorText}`);
+                    throw new Error(`API request failed: ${responseText}`);
                 }
-                const coreData = await coreResponse.json();
-                console.log('Core Data Response:', coreData); // Debug
+
+                let coreData;
+                try {
+                    coreData = JSON.parse(responseText);
+                } catch (jsonError) {
+                    throw new Error(`Invalid JSON: ${responseText}`);
+                }
+
+                console.log('Parsed Core Data:', coreData); // Debug
+                if (coreData.error) {
+                    throw new Error(coreData.error);
+                }
+
                 const parsedData = parseResponse(coreData.content);
                 displayCoreData(parsedData, domain);
-
-                // Image
-                const imageResponse = await fetch('/api/getDomainImage', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ domain })
-                });
-                if (!imageResponse.ok) {
-                    const errorText = await imageResponse.text();
-                    console.error('Image fetch failed with:', errorText);
-                    throw new Error(`Image fetch failed: ${errorText}`);
-                }
-                const imageData = await imageResponse.json();
-                console.log('Image Data Response:', imageData); // Debug
-                displayImage(imageData.imageUrl);
             } catch (error) {
-                console.error('Error in fetchAndDisplayReport:', error);
+                console.error('Fetch Error:', error);
                 displayError(error.message);
-                displayFallbackImage(domain); // Fallback for image
             }
         }
 
-        // Parse core response
         function parseResponse(response) {
-            if (!response) return { error: 'No response received' };
+            if (!response) return { error: 'No response from API' };
             const lines = response.split('\n');
             let data = {
-                estimatedValue: '$500-$1,000 (default estimate based on typical domain metrics)',
+                estimatedValue: '$500-$1,000 (default estimate)',
                 bestUseCase: '',
                 buildPrompt: '',
                 seoAudit: '',
@@ -329,7 +292,6 @@
             return data;
         }
 
-        // Display core data
         function displayCoreData(data, domain) {
             if (data.error) {
                 displayError(data.error);
@@ -341,17 +303,17 @@
             `;
             document.getElementById('best-use-case').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-lightbulb mr-2"></i>Best Use Case</h3>
-                <p class="mt-2">${data.bestUseCase || 'Explore potential uses based on your niche.'}</p>
+                <p class="mt-2">${data.bestUseCase || 'Explore potential uses.'}</p>
                 <h4 class="text-md font-bold mt-4"><i class="fas fa-code mr-2"></i>Build It Prompt</h4>
-                <pre class="mt-2">${data.buildPrompt || 'Copy this into an AI studio like Replit or Firebase to build your platform.'}</pre>
+                <pre class="mt-2">${data.buildPrompt || 'Copy this into an AI studio like Replit or Firebase.'}</pre>
             `;
             document.getElementById('seo-audit').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-search mr-2"></i>SEO Audit</h3>
-                <p class="mt-2">${data.seoAudit || 'Optimize with targeted keywords and backlinks.'}</p>
+                <p class="mt-2">${data.seoAudit || 'Optimize with keywords and backlinks.'}</p>
             `;
             document.getElementById('market-trends').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-chart-bar mr-2"></i>Market Trends</h3>
-                <p class="mt-2">${data.marketTrends || 'Research current industry shifts.'}</p>
+                <p class="mt-2">${data.marketTrends || 'Research industry shifts.'}</p>
             `;
             document.getElementById('domain-history').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-history mr-2"></i>Domain History</h3>
@@ -359,7 +321,7 @@
             `;
             document.getElementById('competition').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-chart-line mr-2"></i>Competition Analysis</h3>
-                <p class="mt-2">${data.competition || 'Analyze competitors in your niche.'}</p>
+                <p class="mt-2">${data.competition || 'Analyze competitors.'}</p>
             `;
             let metricsHtml = '<h3 class="text-lg font-bold"><i class="fas fa-tachometer-alt mr-2"></i>Domain Metrics</h3><ul class="mt-2">';
             for (const [key, value] of Object.entries(data.metrics)) {
@@ -384,7 +346,7 @@
                     </table>
                 `;
             } else {
-                buyersHtml += '<p class="mt-2">No buyers identified yet.</p>';
+                buyersHtml += '<p class="mt-2">No buyers identified.</p>';
             }
             document.getElementById('buyers').innerHTML = buyersHtml;
 
@@ -404,7 +366,7 @@
                     </table>
                 `;
             } else {
-                partnershipsHtml += '<p class="mt-2">No partnerships identified yet.</p>';
+                partnershipsHtml += '<p class="mt-2">No partnerships identified.</p>';
             }
             document.getElementById('partnerships').innerHTML = partnershipsHtml;
 
@@ -416,17 +378,10 @@
             apisHtml += '</ul>';
             document.getElementById('apis').innerHTML = apisHtml;
 
-            // PDF Download
             document.getElementById('download-report').addEventListener('click', () => {
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 let yOffset = 10;
-
-                const imageElement = document.getElementById('domain-image').querySelector('img');
-                if (imageElement) {
-                    doc.addImage(imageElement.src, 'PNG', 10, yOffset, 50, 25);
-                    yOffset += 35;
-                }
                 doc.text(`Domain: ${domain}`, 10, yOffset);
                 yOffset += 10;
 
@@ -440,49 +395,16 @@
             });
         }
 
-        // Display image
-        function displayImage(imageUrl) {
-            document.getElementById('domain-image').innerHTML = `
-                <h3 class="text-lg font-bold"><i class="fas fa-image mr-2"></i>Domain Visual</h3>
-                <img src="${imageUrl}" alt="Domain Image" class="mt-2 mx-auto w-full max-w-xs rounded">
-            `;
-        }
-
-        // Fallback image
-        function displayFallbackImage(domain) {
-            const canvas = document.createElement('canvas');
-            canvas.width = 200;
-            canvas.height = 100;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#f7fafc' : '#2d3748';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '40px "Font Awesome 5 Free"';
-            ctx.fillStyle = 'var(--primary)';
-            ctx.textAlign = 'center';
-            ctx.fillText('\uf0ac', 50, 60);
-            ctx.font = '20px Poppins';
-            ctx.fillStyle = 'var(--text-color)';
-            ctx.fillText(domain, 120, 50);
-            const imageUrl = canvas.toDataURL();
-
-            document.getElementById('domain-image').innerHTML = `
-                <h3 class="text-lg font-bold"><i class="fas fa-image mr-2"></i>Domain Visual</h3>
-                <img src="${imageUrl}" alt="Fallback Domain Image" class="mt-2 mx-auto w-full max-w-xs rounded">
-            `;
-        }
-
-        // Display error
         function displayError(message) {
             document.getElementById('report-content').innerHTML = `
                 <div class="card text-center">
                     <h3 class="text-lg font-bold"><i class="fas fa-exclamation-triangle mr-2"></i>Error</h3>
                     <p class="mt-2">${message}</p>
-                    <p>Please try again or contact support.</p>
+                    <p>Check your API key or try again later.</p>
                 </div>
             `;
         }
 
-        // API link mapping
         function getApiLink(apiName) {
             const apiLinks = {
                 'Google Maps API': 'https://developers.google.com/maps',
