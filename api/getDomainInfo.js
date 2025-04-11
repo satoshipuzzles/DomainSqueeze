@@ -13,20 +13,23 @@ module.exports = async (req, res) => {
     }
 
     const prompt = `
-Provide an extremely detailed analysis of the domain '${domain}' for a corporate client aiming to maximize its value. Structure the response as follows:
+Imagine you’re a domain valuation expert tasked with analyzing '${domain}' for a client who wants to maximize its potential. Provide a detailed report structured as follows, ensuring every section is filled with actionable insights. If unsure, make educated guesses based on typical domain trends and explain your reasoning.
 
-- Estimated Value: [Provide a specific numeric range, e.g., $500-$1,000, and explain factors like keyword demand, TLD rarity, and market trends]
-- Best Use Case: [Go into extreme detail about the primary and best use case for this domain. Estimate potential revenue (e.g., $X/month), required resources (e.g., tech stack, team size, marketing budget), and timeline (e.g., 3-6 months to profitability). Include SEO strategies, content ideas, and monetization methods.]
-- Competition Analysis: [Analyze the competitive landscape for this domain’s niche. Detail how to outperform competitors (e.g., better UX, unique content). Identify what competitors miss and what they need to succeed.]
+- Estimated Value: [Hypothetically, what would this domain be worth on the market? Provide a specific numeric range, e.g., $500-$1,000, based on factors like keyword strength, TLD appeal, and niche demand. Explain your logic.]
+- Best Use Case: [Describe in extreme detail the primary and best use case for '${domain}'. Estimate potential revenue (e.g., $X/month), required resources (e.g., tech stack like React+Firebase, 3-person team, $5k marketing budget), and timeline (e.g., 3-6 months to profitability). Include SEO strategies, content ideas, and monetization methods like ads or e-commerce.]
+- SEO Audit: [Suggest 5-10 keywords, backlink strategies (e.g., guest posts on niche blogs), and content ideas (e.g., blog posts, landing pages) tailored to '${domain}'.]
+- Market Trends: [Highlight 2-3 current industry trends relevant to '${domain}’s niche, e.g., "e-commerce growth" or "AI adoption".]
+- Domain History: [Suggest checking historical data with tools like WHOIS (https://whois.domaintools.com/${domain}) and archive.org (https://archive.org/web/). Provide a brief hypothetical history if no data is assumed.]
+- Competition Analysis: [Analyze the competitive landscape for '${domain}’s niche. Detail how to outperform competitors (e.g., better UX, unique content). Identify 2-3 gaps competitors miss and how to exploit them.]
 - Domain Metrics:
-  - Search Volume: [Estimated monthly searches]
+  - Search Volume: [Estimate monthly searches, e.g., 1,000-5,000]
   - Competition: [Low/Medium/High]
-  - Related Keywords: [List of 5-10 keywords]
-- Potential Buyers: [List at least 3 companies interested in buying. Include: Company|Website|Contact Page|Reason. Use real company websites (e.g., https://company.com) and contact pages (e.g., https://company.com/contact).]
-- Potential Partnerships: [List at least 3 companies for partnerships. Include: Company|Website|Contact Page|Reason. Use real company websites and contact pages.]
-- Relevant APIs: [List 3+ APIs to enhance a platform on this domain. Format as: API Name: Description (e.g., how it integrates).]
+  - Related Keywords: [List 5-10 keywords]
+- Potential Buyers: [List 3+ companies interested in buying. Format: Company|Website|Contact Page|Reason. Use real websites (e.g., https://company.com) and contact pages (e.g., https://company.com/contact).]
+- Potential Partnerships: [List 3+ companies for partnerships. Format: Company|Website|Contact Page|Reason.]
+- Relevant APIs: [List 3+ APIs to enhance a platform on '${domain}'. Format: API Name: Description.]
 
-Ensure all data is actionable and detailed. If exact contact info isn’t available, provide company websites and contact pages. Never return "N/A" for Estimated Value—provide a fallback range if unsure.
+Ensure every section has concrete, actionable data. For Estimated Value, always provide a numeric range and justification, even if hypothetical.
 `;
 
     try {
@@ -39,7 +42,7 @@ Ensure all data is actionable and detailed. If exact contact info isn’t availa
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: prompt }],
-                max_tokens: 1500 // Increased for detailed output
+                max_tokens: 2000 // Increased for comprehensive output
             })
         });
 
