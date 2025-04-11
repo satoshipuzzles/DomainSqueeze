@@ -151,9 +151,11 @@
             document.getElementById('results').style.display = 'none';
 
             try {
+                console.log('Sending domain to API:', domain);
                 const response = await getDomainInfo(domain);
                 displayResults(response);
             } catch (error) {
+                console.error('Error details:', error);
                 alert('An error occurred: ' + error.message);
             } finally {
                 document.getElementById('loading').style.display = 'none';
@@ -177,7 +179,9 @@
             });
 
             if (!response.ok) {
-                throw new Error('API request failed');
+                const errorText = await response.text();
+                console.log('Error response from server:', errorText);
+                throw new Error('API request failed: ' + errorText);
             }
 
             const data = await response.json();
