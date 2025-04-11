@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Domain Squeeze</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
@@ -35,57 +34,102 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, transform 0.2s;
         }
         button:hover {
             background-color: var(--secondary-color);
+            transform: scale(1.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            border: 1px solid var(--primary-color);
+            padding: 0.5rem;
+            text-align: left;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: var(--text-color);
         }
     </style>
 </head>
 <body class="bg-[var(--background-color)] text-[var(--text-color)]">
-    <header class="p-4 flex justify-between items-center">
-        <h1 class="text-2xl font-bold">Domain Squeeze</h1>
-        <button id="theme-toggle">Toggle Theme</button>
+    <header class="p-4 flex justify-between items-center animate__animated animate__fadeIn">
+        <h1 class="text-2xl font-bold"><i class="fas fa-globe mr-2"></i>Domain Squeeze</h1>
+        <button id="theme-toggle"><i class="fas fa-moon mr-2"></i>Toggle Theme</button>
     </header>
     <main>
-        <section id="hero" class="text-center py-20">
-            <h2 class="text-4xl font-bold mb-4 animate__animated animate__fadeIn">Unlock the True Value of Your Domain</h2>
-            <p class="mb-8 animate__animated animate__fadeIn animate__delay-1s">Get AI-powered insights and metrics for your domain name.</p>
-            <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s">Get Started</button>
+        <!-- Landing Page -->
+        <section id="hero" class="text-center py-16">
+            <h2 class="text-4xl font-bold mb-4 animate__animated animate__fadeIn">Maximize Your Domain's Potential</h2>
+            <p class="mb-8 text-lg animate__animated animate__fadeIn animate__delay-1s">Discover the value, use cases, and opportunities for your domain with AI-powered insights.</p>
+            <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s"><i class="fas fa-rocket mr-2"></i>Get Started</button>
         </section>
-        <section id="domain-form" class="py-10" style="display: none;">
-            <form class="max-w-md mx-auto">
-                <label for="domain" class="block mb-2">Domain Name</label>
-                <input type="text" id="domain" class="w-full p-2 rounded bg-[var(--background-color)] text-[var(--text-color)] border border-[var(--primary-color)]" placeholder="e.g., example.com">
-                <button type="submit" class="mt-4 w-full">Get Estimate</button>
+        <section id="features" class="py-10">
+            <h3 class="text-3xl font-bold text-center mb-8 animate__animated animate__fadeIn">Why Choose Us?</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="text-center p-4 animate__animated animate__fadeIn animate__delay-1s">
+                    <i class="fas fa-brain fa-3x mb-4 text-[var(--primary-color)]"></i>
+                    <h4 class="text-xl font-bold">Deep AI Analysis</h4>
+                    <p>Uncover hidden opportunities with our advanced AI.</p>
+                </div>
+                <div class="text-center p-4 animate__animated animate__fadeIn animate__delay-2s">
+                    <i class="fas fa-file-alt fa-3x mb-4 text-[var(--primary-color)]"></i>
+                    <h4 class="text-xl font-bold">Comprehensive Reports</h4>
+                    <p>Get detailed insights tailored to your domain.</p>
+                </div>
+                <div class="text-center p-4 animate__animated animate__fadeIn animate__delay-3s">
+                    <i class="fas fa-handshake fa-3x mb-4 text-[var(--primary-color)]"></i>
+                    <h4 class="text-xl font-bold">Buyer Connections</h4>
+                    <p>Find potential buyers and partners effortlessly.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Form Section -->
+        <section id="domain-form" class="py-10 max-w-md mx-auto" style="display: none;">
+            <form class="animate__animated animate__fadeIn">
+                <label for="domain" class="block mb-2 text-lg"><i class="fas fa-globe mr-2"></i>Enter Domain Name</label>
+                <input type="text" id="domain" class="w-full p-2 rounded bg-[var(--background-color)] text-[var(--text-color)] border border-[var(--primary-color)]" placeholder="e.g., example.com" required>
+                <button type="submit" class="mt-4 w-full"><i class="fas fa-search mr-2"></i>Get Estimate</button>
             </form>
         </section>
-        <section id="results" class="py-10" style="display: none;">
-            <h2 class="text-3xl font-bold text-center mb-8">Analysis Report</h2>
-            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div id="estimated-value" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
-                <div id="best-use-case" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
-                <div id="who-to-sell-to" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
-                <div id="metrics" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
-                <div id="comparable-sales" class="p-4 bg-[var(--background-color)] rounded shadow col-span-2"></div>
-                <canvas id="metrics-chart" class="mt-8"></canvas>
+        <!-- Results Section -->
+        <section id="results" class="py-10 max-w-5xl mx-auto" style="display: none;">
+            <h2 class="text-3xl font-bold text-center mb-8 animate__animated animate__fadeIn"><i class="fas fa-file-alt mr-2"></i>Domain Analysis Report</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div id="estimated-value" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                <div id="best-use-case" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                <div id="competition" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                <div id="metrics" class="p-6 bg-[var(--background-color)] rounded shadow animate__animated animate__fadeIn"></div>
+                <div id="buyers" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
+                <div id="partnerships" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
+                <div id="apis" class="p-6 bg-[var(--background-color)] rounded shadow col-span-1 md:col-span-2 animate__animated animate__fadeIn"></div>
             </div>
-            <button id="download-report" class="mt-8 mx-auto block">Download Report</button>
-            <button id="back-to-form" class="mt-4 mx-auto block bg-gray-500">Analyze Another Domain</button>
+            <div class="text-center mt-8">
+                <button id="download-report" class="mr-4"><i class="fas fa-download mr-2"></i>Download Report</button>
+                <button id="back-to-form" class="bg-gray-500"><i class="fas fa-arrow-left mr-2"></i>Analyze Another Domain</button>
+            </div>
         </section>
-        <div id="loading" class="text-center py-10" style="display: none;">
-            <i class="fas fa-spinner fa-spin fa-3x"></i>
-            <p>Analyzing domain...</p>
+        <!-- Loading Indicator -->
+        <div id="loading" class="text-center py-16" style="display: none;">
+            <i class="fas fa-spinner fa-spin fa-3x text-[var(--primary-color)]"></i>
+            <p class="mt-4">Analyzing your domain...</p>
         </div>
     </main>
-    <footer class="p-4 text-center bg-[var(--background-color)]">
-        <p>© 2023 Domain Squeeze</p>
+    <footer class="p-4 text-center bg-[var(--background-color)] animate__animated animate__fadeIn">
+        <p>© 2025 Domain Squeeze. All rights reserved.</p>
     </footer>
     <script>
         // Theme toggle
         const themeToggle = document.getElementById('theme-toggle');
         themeToggle.addEventListener('click', () => {
             document.body.classList.toggle('light-mode');
+            themeToggle.innerHTML = document.body.classList.contains('light-mode') 
+                ? '<i class="fas fa-sun mr-2"></i>Toggle Theme' 
+                : '<i class="fas fa-moon mr-2"></i>Toggle Theme';
         });
 
         // Navigation
@@ -93,9 +137,12 @@
         const domainForm = document.getElementById('domain-form');
         const resultsSection = document.getElementById('results');
         const loadingDiv = document.getElementById('loading');
+        const heroSection = document.getElementById('hero');
+        const featuresSection = document.getElementById('features');
 
         getStartedButton.addEventListener('click', () => {
-            document.getElementById('hero').style.display = 'none';
+            heroSection.style.display = 'none';
+            featuresSection.style.display = 'none';
             domainForm.style.display = 'block';
             domainForm.classList.add('animate__animated', 'animate__fadeIn');
         });
@@ -125,8 +172,8 @@
                 displayResults(data);
             } catch (error) {
                 alert('An error occurred: ' + error.message);
-            } finally {
                 loadingDiv.style.display = 'none';
+                domainForm.style.display = 'block';
             }
         });
 
@@ -138,20 +185,23 @@
 
         // Fetch domain info from API route
         async function getDomainInfo(domain) {
-            const response = await fetch('/api/getDomainInfo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ domain })
-            });
+            try {
+                const response = await fetch('/api/getDomainInfo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain })
+                });
 
-            if (!response.ok) {
-                throw new Error('API request failed');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`API request failed: ${errorText}`);
+                }
+
+                const data = await response.json();
+                return data.content;
+            } catch (error) {
+                throw new Error(error.message);
             }
-
-            const data = await response.json();
-            return data.content;
         }
 
         // Parse API response
@@ -160,29 +210,50 @@
             let data = {
                 estimatedValue: '',
                 bestUseCase: '',
-                whoToSellTo: '',
+                competition: '',
                 metrics: {},
-                comparableSales: []
+                buyers: [],
+                partnerships: [],
+                apis: []
             };
             let currentSection = '';
 
             lines.forEach(line => {
+                line = line.trim();
+                if (!line) return;
+
                 if (line.startsWith('Estimated Value:')) {
                     data.estimatedValue = line.replace('Estimated Value:', '').trim();
                 } else if (line.startsWith('Best Use Case:')) {
+                    currentSection = 'bestUseCase';
                     data.bestUseCase = line.replace('Best Use Case:', '').trim();
-                } else if (line.startsWith('Potential Buyers:')) {
-                    data.whoToSellTo = line.replace('Potential Buyers:', '').trim();
+                } else if (line.startsWith('Competition Analysis:')) {
+                    currentSection = 'competition';
+                    data.competition = line.replace('Competition Analysis:', '').trim();
                 } else if (line.startsWith('Domain Metrics:')) {
                     currentSection = 'metrics';
-                } else if (line.startsWith('Recent Sale Analysis:')) {
-                    currentSection = 'comparableSales';
-                } else if (currentSection === 'metrics' && line.trim()) {
+                } else if (line.startsWith('Potential Buyers:')) {
+                    currentSection = 'buyers';
+                } else if (line.startsWith('Potential Partnerships:')) {
+                    currentSection = 'partnerships';
+                } else if (line.startsWith('Relevant APIs:')) {
+                    currentSection = 'apis';
+                } else if (currentSection === 'bestUseCase') {
+                    data.bestUseCase += ' ' + line;
+                } else if (currentSection === 'competition') {
+                    data.competition += ' ' + line;
+                } else if (currentSection === 'metrics' && line.includes(':')) {
                     const [key, value] = line.split(':').map(part => part.trim());
                     data.metrics[key] = value;
-                } else if (currentSection === 'comparableSales' && line.trim()) {
-                    const [domain, price] = line.split(':').map(part => part.trim());
-                    data.comparableSales.push({ domain, price });
+                } else if (currentSection === 'buyers' && line.includes('|')) {
+                    const [company, contact, contactInfo, reason] = line.split('|').map(part => part.trim());
+                    data.buyers.push({ company, contact, contactInfo, reason });
+                } else if (currentSection === 'partnerships' && line.includes('|')) {
+                    const [company, contact, contactInfo, reason] = line.split('|').map(part => part.trim());
+                    data.partnerships.push({ company, contact, contactInfo, reason });
+                } else if (currentSection === 'apis' && line.includes(':')) {
+                    const [api, description] = line.split(':').map(part => part.trim());
+                    data.apis.push({ api, description });
                 }
             });
 
@@ -191,45 +262,101 @@
 
         // Display results
         function displayResults(data) {
-            document.getElementById('estimated-value').innerHTML = `<h3 class="text-xl font-bold">Estimated Value</h3><p>${data.estimatedValue || 'N/A'}</p>`;
-            document.getElementById('best-use-case').innerHTML = `<h3 class="text-xl font-bold">Best Use Case</h3><p>${data.bestUseCase || 'N/A'}</p>`;
-            document.getElementById('who-to-sell-to').innerHTML = `<h3 class="text-xl font-bold">Potential Buyers</h3><p>${data.whoToSellTo || 'N/A'}</p>`;
+            loadingDiv.style.display = 'none';
 
-            let metricsHtml = '<h3 class="text-xl font-bold">Metrics</h3>';
+            // Estimated Value
+            document.getElementById('estimated-value').innerHTML = `
+                <h3 class="text-xl font-bold"><i class="fas fa-dollar-sign mr-2"></i>Estimated Value</h3>
+                <p class="mt-2">${data.estimatedValue || 'N/A'}</p>
+            `;
+
+            // Best Use Case
+            document.getElementById('best-use-case').innerHTML = `
+                <h3 class="text-xl font-bold"><i class="fas fa-lightbulb mr-2"></i>Best Use Case</h3>
+                <p class="mt-2">${data.bestUseCase || 'N/A'}</p>
+            `;
+
+            // Competition Analysis
+            document.getElementById('competition').innerHTML = `
+                <h3 class="text-xl font-bold"><i class="fas fa-chart-line mr-2"></i>Competition Analysis</h3>
+                <p class="mt-2">${data.competition || 'N/A'}</p>
+            `;
+
+            // Metrics
+            let metricsHtml = '<h3 class="text-xl font-bold"><i class="fas fa-tachometer-alt mr-2"></i>Domain Metrics</h3><ul class="mt-2">';
             for (const [key, value] of Object.entries(data.metrics)) {
-                metricsHtml += `<p title="${getMetricExplanation(key)}">${key}: ${value}</p>`;
+                metricsHtml += `<li title="${getMetricExplanation(key)}">${key}: ${value}</li>`;
             }
+            metricsHtml += '</ul>';
             document.getElementById('metrics').innerHTML = metricsHtml;
 
-            let salesHtml = '<h3 class="text-xl font-bold">Recent Sale Analysis</h3><ul>';
-            data.comparableSales.forEach(sale => {
-                salesHtml += `<li>${sale.domain}: ${sale.price}</li>`;
-            });
-            salesHtml += '</ul>';
-            document.getElementById('comparable-sales').innerHTML = salesHtml;
+            // Potential Buyers
+            let buyersHtml = '<h3 class="text-xl font-bold"><i class="fas fa-users mr-2"></i>Potential Buyers</h3>';
+            if (data.buyers.length > 0) {
+                buyersHtml += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Contact Person</th>
+                                <th>Contact Info</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.buyers.map(buyer => `
+                                <tr>
+                                    <td>${buyer.company}</td>
+                                    <td>${buyer.contact}</td>
+                                    <td>${buyer.contactInfo}</td>
+                                    <td>${buyer.reason}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                buyersHtml += '<p class="mt-2">No buyers identified.</p>';
+            }
+            document.getElementById('buyers').innerHTML = buyersHtml;
 
-            // Chart.js example for metrics
-            const ctx = document.getElementById('metrics-chart').getContext('2d');
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: Object.keys(data.metrics),
-                    datasets: [{
-                        label: 'Domain Metrics',
-                        data: Object.values(data.metrics).map(val => parseInt(val) || 0),
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
+            // Potential Partnerships
+            let partnershipsHtml = '<h3 class="text-xl font-bold"><i class="fas fa-handshake mr-2"></i>Potential Partnerships</h3>';
+            if (data.partnerships.length > 0) {
+                partnershipsHtml += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Contact Person</th>
+                                <th>Contact Info</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.partnerships.map(partner => `
+                                <tr>
+                                    <td>${partner.company}</td>
+                                    <td>${partner.contact}</td>
+                                    <td>${partner.contactInfo}</td>
+                                    <td>${partner.reason}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } else {
+                partnershipsHtml += '<p class="mt-2">No partnerships identified.</p>';
+            }
+            document.getElementById('partnerships').innerHTML = partnershipsHtml;
+
+            // Relevant APIs
+            let apisHtml = '<h3 class="text-xl font-bold"><i class="fas fa-plug mr-2"></i>Relevant APIs</h3><ul class="mt-2">';
+            data.apis.forEach(api => {
+                apisHtml += `<li><strong>${api.api}:</strong> ${api.description}</li>`;
             });
+            apisHtml += '</ul>';
+            document.getElementById('apis').innerHTML = apisHtml;
 
             resultsSection.style.display = 'block';
             resultsSection.classList.add('animate__animated', 'animate__fadeIn');
@@ -238,24 +365,31 @@
         // Metric explanations
         function getMetricExplanation(metric) {
             const explanations = {
-                'Search Volume': 'Estimated monthly search volume for the domain\'s keywords.',
-                'Competition': 'Level of competition for the domain\'s keywords (Low, Medium, High).'
+                'Search Volume': 'Estimated monthly searches for the domain’s keywords.',
+                'Competition': 'SEO competition level (Low, Medium, High).',
+                'Related Keywords': 'Keywords related to the domain’s niche.'
             };
-            return explanations[metric] || '';
+            return explanations[metric] || 'No explanation available.';
         }
 
         // Download report as PDF
         document.getElementById('download-report').addEventListener('click', () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
-            doc.text('Domain Squeeze Report', 10, 10);
-            doc.text(`Domain: ${document.getElementById('domain').value}`, 10, 20);
-            doc.text(document.getElementById('estimated-value').innerText, 10, 30);
-            doc.text(document.getElementById('best-use-case').innerText, 10, 40);
-            doc.text(document.getElementById('who-to-sell-to').innerText, 10, 50);
-            doc.text(document.getElementById('metrics').innerText, 10, 60);
-            doc.text(document.getElementById('comparable-sales').innerText, 10, 70);
-            doc.save('domain_report.pdf');
+            let yOffset = 10;
+
+            doc.text('Domain Squeeze Report', 10, yOffset);
+            yOffset += 10;
+            doc.text(`Domain: ${document.getElementById('domain').value}`, 10, yOffset);
+            yOffset += 10;
+
+            ['estimated-value', 'best-use-case', 'competition', 'metrics', 'buyers', 'partnerships', 'apis'].forEach(id => {
+                const text = document.getElementById(id).innerText;
+                doc.text(text, 10, yOffset);
+                yOffset += text.split('\n').length * 10 + 10;
+            });
+
+            doc.save('domain_squeeze_report.pdf');
         });
     </script>
 </body>
