@@ -12,18 +12,15 @@ module.exports = async (req, res) => {
         return res.status(500).json({ error: 'API key is not set' });
     }
 
-    const prompt = `Please provide a detailed analysis of the domain '${domain}', including:
-- Estimated Value: [value range]
-- Best Use Case: [description]
-- Who to Sell To: [suggestions]
-- Domain Metrics:
-  - Search Volume: [number]
-  - Competition: [Low/Medium/High]
-  - Related Keywords: [list]
-- Comparable Sales:
-  - [domain1]: [price]
-  - [domain2]: [price]
-- Other Insights: [any additional information]`;
+    const prompt = `Provide a comprehensive analysis for the domain '${domain}' including:
+    - Estimated Value: [value range]
+    - Best Use Case: [description]
+    - Potential Buyers: [names and contact info]
+    - Recent Sale Analysis: [comparable domains and prices]
+    - Domain Metrics:
+      - Search Volume: [number]
+      - Competition: [Low/Medium/High]
+      - Related Keywords: [list]`;
 
     try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
