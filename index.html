@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domain Squeeze</title>
+    <title>Domain Squeeze - Maximize Your Domain’s Value</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@300;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #1a202c;
@@ -37,21 +38,29 @@
             background-color: var(--bg-color);
             border-bottom: 1px solid var(--primary);
         }
+        h1, h2, h3 {
+            font-family: 'Poppins', sans-serif;
+        }
         .card {
             background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
             margin-bottom: 1rem;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-4px);
         }
         button {
             background-color: var(--primary);
             color: white;
             padding: 0.75rem 1.5rem;
-            border-radius: 6px;
+            border-radius: 8px;
             border: none;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.2s;
+            font-family: 'Poppins', sans-serif;
         }
         button:hover {
             background-color: var(--secondary);
@@ -82,38 +91,58 @@
             .card-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
+                gap: 1.5rem;
             }
         }
     </style>
 </head>
 <body class="bg-[var(--bg-color)] text-[var(--text-color)]">
     <header class="p-4 flex justify-between items-center animate__animated animate__fadeIn">
-        <h1 class="text-xl font-bold"><i class="fas fa-globe mr-2"></i>Domain Squeeze</h1>
+        <h1 class="text-2xl font-bold"><i class="fas fa-globe mr-2"></i>Domain Squeeze</h1>
         <button id="theme-toggle"><i class="fas fa-moon mr-2"></i>Theme</button>
     </header>
     <main class="container mx-auto px-4 py-6">
         <!-- Landing Page -->
         <section id="hero" class="text-center py-12">
-            <h2 class="text-3xl font-bold mb-4 animate__animated animate__fadeIn">Unlock Your Domain’s Full Potential</h2>
-            <p class="mb-6 text-lg animate__animated animate__fadeIn animate__delay-1s">AI-driven insights to maximize value and opportunity.</p>
-            <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s"><i class="fas fa-rocket mr-2"></i>Start Now</button>
+            <h2 class="text-4xl md:text-5xl font-bold mb-4 animate__animated animate__fadeIn">Turn Your Domain into Gold</h2>
+            <p class="text-lg md:text-xl mb-6 animate__animated animate__fadeIn animate__delay-1s">Unlock hidden value with AI-powered insights—find the best use case, buyers, and growth strategies for your domain.</p>
+            <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s"><i class="fas fa-rocket mr-2"></i>Analyze Your Domain</button>
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card animate__animated animate__fadeIn animate__delay-3s">
+                    <i class="fas fa-brain fa-2x mb-4 text-[var(--primary)]"></i>
+                    <h3 class="text-lg font-bold">Deep Analysis</h3>
+                    <p>AI-driven reports tailored to your domain’s potential.</p>
+                </div>
+                <div class="card animate__animated animate__fadeIn animate__delay-4s">
+                    <i class="fas fa-users fa-2x mb-4 text-[var(--primary)]"></i>
+                    <h3 class="text-lg font-bold">Buyers & Partners</h3>
+                    <p>Connect with companies eager to invest.</p>
+                </div>
+                <div class="card animate__animated animate__fadeIn animate__delay-5s">
+                    <i class="fas fa-chart-line fa-2x mb-4 text-[var(--primary)]"></i>
+                    <h3 class="text-lg font-bold">Growth Strategies</h3>
+                    <p>Actionable SEO and monetization plans.</p>
+                </div>
+            </div>
         </section>
         <!-- Form Section -->
         <section id="domain-form" class="py-6" style="display: none;">
             <form class="max-w-md mx-auto animate__animated animate__fadeIn">
-                <label for="domain" class="block mb-2 text-lg"><i class="fas fa-globe mr-2"></i>Domain Name</label>
-                <input type="text" id="domain" class="w-full p-2 rounded bg-[var(--card-bg)] text-[var(--text-color)] border border-[var(--primary)]" placeholder="e.g., example.com" required>
-                <button type="submit" class="mt-4 w-full"><i class="fas fa-search mr-2"></i>Analyze</button>
+                <label for="domain" class="block mb-2 text-lg"><i class="fas fa-globe mr-2"></i>Enter Your Domain</label>
+                <input type="text" id="domain" class="w-full p-3 rounded bg-[var(--card-bg)] text-[var(--text-color)] border border-[var(--primary)]" placeholder="e.g., example.com" required>
+                <button type="submit" class="mt-4 w-full"><i class="fas fa-search mr-2"></i>Get Insights</button>
             </form>
         </section>
         <!-- Results Section -->
         <section id="results" class="py-6" style="display: none;">
-            <h2 class="text-2xl font-bold text-center mb-6 animate__animated animate__fadeIn"><i class="fas fa-file-alt mr-2"></i>Domain Report</h2>
-            <div id="report-content" class="space-y-4">
+            <h2 class="text-3xl font-bold text-center mb-6 animate__animated animate__fadeIn"><i class="fas fa-file-alt mr-2"></i>Your Domain Report</h2>
+            <div id="report-content" class="space-y-4 card-grid">
                 <div id="domain-image" class="card text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading Image...</div>
                 <div id="estimated-value" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="best-use-case" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+                <div id="seo-audit" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+                <div id="market-trends" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+                <div id="domain-history" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="competition" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="metrics" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
                 <div id="buyers" class="card"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
@@ -175,7 +204,7 @@
 
         // Fetch and display report incrementally
         async function fetchAndDisplayReport(domain) {
-            // Fetch core data
+            // Core data
             const coreResponse = await fetch('/api/getDomainInfo', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -183,24 +212,32 @@
             });
             const coreData = await coreResponse.json();
             const parsedData = parseResponse(coreData.content);
-            displayCoreData(parsedData);
+            displayCoreData(parsedData, domain);
 
-            // Fetch image separately
-            const imageResponse = await fetch('/api/getDomainImage', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ domain })
-            });
-            const imageData = await imageResponse.json();
-            displayImage(imageData.imageUrl);
+            // Image (with fallback)
+            try {
+                const imageResponse = await fetch('/api/getDomainImage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ domain })
+                });
+                const imageData = await imageResponse.json();
+                displayImage(imageData.imageUrl);
+            } catch (error) {
+                console.error('Image fetch failed:', error);
+                displayFallbackImage(domain);
+            }
         }
 
         // Parse core response
         function parseResponse(response) {
             const lines = response.split('\n');
             let data = {
-                estimatedValue: '$500-$1,000 (default estimate based on typical domain metrics)', // Fallback
+                estimatedValue: '$500-$1,000 (default estimate based on typical domain metrics)',
                 bestUseCase: '',
+                seoAudit: '',
+                marketTrends: '',
+                domainHistory: '',
                 competition: '',
                 metrics: {},
                 buyers: [],
@@ -218,6 +255,15 @@
                 } else if (line.startsWith('Best Use Case:')) {
                     currentSection = 'bestUseCase';
                     data.bestUseCase = line.replace('Best Use Case:', '').trim();
+                } else if (line.startsWith('SEO Audit:')) {
+                    currentSection = 'seoAudit';
+                    data.seoAudit = line.replace('SEO Audit:', '').trim();
+                } else if (line.startsWith('Market Trends:')) {
+                    currentSection = 'marketTrends';
+                    data.marketTrends = line.replace('Market Trends:', '').trim();
+                } else if (line.startsWith('Domain History:')) {
+                    currentSection = 'domainHistory';
+                    data.domainHistory = line.replace('Domain History:', '').trim();
                 } else if (line.startsWith('Competition Analysis:')) {
                     currentSection = 'competition';
                     data.competition = line.replace('Competition Analysis:', '').trim();
@@ -231,6 +277,12 @@
                     currentSection = 'apis';
                 } else if (currentSection === 'bestUseCase') {
                     data.bestUseCase += ' ' + line;
+                } else if (currentSection === 'seoAudit') {
+                    data.seoAudit += ' ' + line;
+                } else if (currentSection === 'marketTrends') {
+                    data.marketTrends += ' ' + line;
+                } else if (currentSection === 'domainHistory') {
+                    data.domainHistory += ' ' + line;
                 } else if (currentSection === 'competition') {
                     data.competition += ' ' + line;
                 } else if (currentSection === 'metrics' && line.includes(':')) {
@@ -252,18 +304,30 @@
         }
 
         // Display core data
-        function displayCoreData(data) {
+        function displayCoreData(data, domain) {
             document.getElementById('estimated-value').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-dollar-sign mr-2"></i>Estimated Value</h3>
                 <p class="mt-2">${data.estimatedValue}</p>
             `;
             document.getElementById('best-use-case').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-lightbulb mr-2"></i>Best Use Case</h3>
-                <p class="mt-2">${data.bestUseCase || 'N/A'}</p>
+                <p class="mt-2">${data.bestUseCase || 'Explore potential uses based on your niche.'}</p>
+            `;
+            document.getElementById('seo-audit').innerHTML = `
+                <h3 class="text-lg font-bold"><i class="fas fa-search mr-2"></i>SEO Audit</h3>
+                <p class="mt-2">${data.seoAudit || 'Optimize with targeted keywords and backlinks.'}</p>
+            `;
+            document.getElementById('market-trends').innerHTML = `
+                <h3 class="text-lg font-bold"><i class="fas fa-chart-bar mr-2"></i>Market Trends</h3>
+                <p class="mt-2">${data.marketTrends || 'Research current industry shifts.'}</p>
+            `;
+            document.getElementById('domain-history').innerHTML = `
+                <h3 class="text-lg font-bold"><i class="fas fa-history mr-2"></i>Domain History</h3>
+                <p class="mt-2">${data.domainHistory || `Check <a href="https://whois.domaintools.com/${domain}" target="_blank">WHOIS</a> or <a href="https://archive.org/web/" target="_blank">archive.org</a>.`}</p>
             `;
             document.getElementById('competition').innerHTML = `
                 <h3 class="text-lg font-bold"><i class="fas fa-chart-line mr-2"></i>Competition Analysis</h3>
-                <p class="mt-2">${data.competition || 'N/A'}</p>
+                <p class="mt-2">${data.competition || 'Analyze competitors in your niche.'}</p>
             `;
             let metricsHtml = '<h3 class="text-lg font-bold"><i class="fas fa-tachometer-alt mr-2"></i>Domain Metrics</h3><ul class="mt-2">';
             for (const [key, value] of Object.entries(data.metrics)) {
@@ -281,14 +345,14 @@
                             <tr>
                                 <td>${buyer.company}</td>
                                 <td><a href="${buyer.website}" target="_blank">${buyer.website}</a></td>
-                                <td><a href="${buyer.contactPage}" target="_blank">Contact Page</a></td>
+                                <td><a href="${buyer.contactPage}" target="_blank">Contact</a></td>
                                 <td>${buyer.reason}</td>
                             </tr>
                         `).join('')}</tbody>
                     </table>
                 `;
             } else {
-                buyersHtml += '<p class="mt-2">No buyers identified.</p>';
+                buyersHtml += '<p class="mt-2">No buyers identified yet.</p>';
             }
             document.getElementById('buyers').innerHTML = buyersHtml;
 
@@ -301,14 +365,14 @@
                             <tr>
                                 <td>${partner.company}</td>
                                 <td><a href="${partner.website}" target="_blank">${partner.website}</a></td>
-                                <td><a href="${partner.contactPage}" target="_blank">Contact Page</a></td>
+                                <td><a href="${partner.contactPage}" target="_blank">Contact</a></td>
                                 <td>${partner.reason}</td>
                             </tr>
                         `).join('')}</tbody>
                     </table>
                 `;
             } else {
-                partnershipsHtml += '<p class="mt-2">No partnerships identified.</p>';
+                partnershipsHtml += '<p class="mt-2">No partnerships identified yet.</p>';
             }
             document.getElementById('partnerships').innerHTML = partnershipsHtml;
 
@@ -325,7 +389,6 @@
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 let yOffset = 10;
-                const domain = document.getElementById('domain').value;
 
                 const imageElement = document.getElementById('domain-image').querySelector('img');
                 if (imageElement) {
@@ -335,7 +398,7 @@
                 doc.text(`Domain: ${domain}`, 10, yOffset);
                 yOffset += 10;
 
-                ['estimated-value', 'best-use-case', 'competition', 'metrics', 'buyers', 'partnerships', 'apis'].forEach(id => {
+                ['estimated-value', 'best-use-case', 'seo-audit', 'market-trends', 'domain-history', 'competition', 'metrics', 'buyers', 'partnerships', 'apis'].forEach(id => {
                     const text = document.getElementById(id).innerText;
                     doc.text(text, 10, yOffset);
                     yOffset += text.split('\n').length * 10 + 10;
@@ -353,13 +416,35 @@
             `;
         }
 
+        // Fallback image
+        function displayFallbackImage(domain) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 200;
+            canvas.height = 100;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = document.body.classList.contains('light-mode') ? '#f7fafc' : '#2d3748';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '40px "Font Awesome 5 Free"';
+            ctx.fillStyle = 'var(--primary)';
+            ctx.textAlign = 'center';
+            ctx.fillText('\uf0ac', 50, 60);
+            ctx.font = '20px Poppins';
+            ctx.fillStyle = 'var(--text-color)';
+            ctx.fillText(domain, 120, 50);
+            const imageUrl = canvas.toDataURL();
+
+            document.getElementById('domain-image').innerHTML = `
+                <h3 class="text-lg font-bold"><i class="fas fa-image mr-2"></i>Domain Visual</h3>
+                <img src="${imageUrl}" alt="Fallback Domain Image" class="mt-2 mx-auto w-full max-w-xs rounded">
+            `;
+        }
+
         // API link mapping
         function getApiLink(apiName) {
             const apiLinks = {
                 'Google Maps API': 'https://developers.google.com/maps',
                 'Twitter API': 'https://developer.twitter.com',
                 'OpenWeather API': 'https://openweathermap.org/api'
-                // Add more as needed
             };
             return apiLinks[apiName] || `https://www.google.com/search?q=${encodeURIComponent(apiName)}`;
         }
