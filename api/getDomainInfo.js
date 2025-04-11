@@ -13,10 +13,11 @@ module.exports = async (req, res) => {
     }
 
     const prompt = `
-Imagine you’re a domain valuation expert tasked with analyzing '${domain}' for a client who wants to maximize its potential. Provide a detailed report structured as follows, ensuring every section is filled with actionable insights. If unsure, make educated guesses based on typical domain trends and explain your reasoning.
+Imagine you’re a domain valuation and development expert analyzing '${domain}' for a client who wants to maximize its potential. Provide a detailed report structured as follows, ensuring every section is filled with actionable insights. If unsure, make educated guesses based on typical domain trends and explain your reasoning.
 
 - Estimated Value: [Hypothetically, what would this domain be worth on the market? Provide a specific numeric range, e.g., $500-$1,000, based on factors like keyword strength, TLD appeal, and niche demand. Explain your logic.]
 - Best Use Case: [Describe in extreme detail the primary and best use case for '${domain}'. Estimate potential revenue (e.g., $X/month), required resources (e.g., tech stack like React+Firebase, 3-person team, $5k marketing budget), and timeline (e.g., 3-6 months to profitability). Include SEO strategies, content ideas, and monetization methods like ads or e-commerce.]
+- Build It Prompt: [Provide a detailed prompt the user can copy into an AI studio (e.g., Replit or Firebase) to build the best use case for '${domain}'. Include: 1) Frontend (React, Tailwind), 2) Backend (Firebase), 3) Features (e.g., listings, payments via Stripe), 4) Resources (tech stack, team, budget), 5) Deployment (Firebase Hosting). Tailor it to the Best Use Case above.]
 - SEO Audit: [Suggest 5-10 keywords, backlink strategies (e.g., guest posts on niche blogs), and content ideas (e.g., blog posts, landing pages) tailored to '${domain}'.]
 - Market Trends: [Highlight 2-3 current industry trends relevant to '${domain}’s niche, e.g., "e-commerce growth" or "AI adoption".]
 - Domain History: [Suggest checking historical data with tools like WHOIS (https://whois.domaintools.com/${domain}) and archive.org (https://archive.org/web/). Provide a brief hypothetical history if no data is assumed.]
@@ -29,7 +30,7 @@ Imagine you’re a domain valuation expert tasked with analyzing '${domain}' for
 - Potential Partnerships: [List 3+ companies for partnerships. Format: Company|Website|Contact Page|Reason.]
 - Relevant APIs: [List 3+ APIs to enhance a platform on '${domain}'. Format: API Name: Description.]
 
-Ensure every section has concrete, actionable data. For Estimated Value, always provide a numeric range and justification, even if hypothetical.
+Ensure every section has concrete, actionable data. For Estimated Value, always provide a numeric range and justification, even if hypothetical. Tailor the Build It Prompt to the specific Best Use Case provided.
 `;
 
     try {
@@ -42,7 +43,7 @@ Ensure every section has concrete, actionable data. For Estimated Value, always 
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: prompt }],
-                max_tokens: 2000 // Increased for comprehensive output
+                max_tokens: 2500 // Increased for build prompt
             })
         });
 
