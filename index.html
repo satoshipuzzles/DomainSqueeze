@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Domain Squeeze</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
@@ -19,7 +20,7 @@
             --background-color: #ffffff;
             --text-color: #121212;
             --primary-color: #6200ee;
-            --secondary-color: #vista;
+            --secondary-color: #018786;
         }
         body {
             background-color: var(--background-color);
@@ -39,16 +40,6 @@
         button:hover {
             background-color: var(--secondary-color);
         }
-        .metric-bar {
-            background-color: #4b5563;
-            height: 8px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .metric-fill {
-            height: 100%;
-            background-color: #3b82f6;
-        }
     </style>
 </head>
 <body class="bg-[var(--background-color)] text-[var(--text-color)]">
@@ -61,34 +52,6 @@
             <h2 class="text-4xl font-bold mb-4 animate__animated animate__fadeIn">Unlock the True Value of Your Domain</h2>
             <p class="mb-8 animate__animated animate__fadeIn animate__delay-1s">Get AI-powered insights and metrics for your domain name.</p>
             <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s">Get Started</button>
-        </section>
-        <section id="features" class="py-10">
-            <h3 class="text-3xl font-bold text-center mb-8">Features</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                <div class="text-center">
-                    <i class="fas fa-brain fa-3x mb-4 text-[var(--primary-color)]"></i>
-                    <h4 class="text-xl font-bold">AI Analysis</h4>
-                    <p>Leverage advanced AI to analyze your domain.</p>
-                </div>
-                <div class="text-center">
-                    <i class="fas fa-chart-bar fa-3x mb-4 text-[var(--primary-color)]"></i>
-                    <h4 class="text-xl font-bold">Detailed Reports</h4>
-                    <p>Get comprehensive reports with key metrics.</p>
-                </div>
-                <div class="text-center">
-                    <i class="fas fa-download fa-3x mb-4 text-[var(--primary-color)]"></i>
-                    <h4 class="text-xl font-bold">Downloadable PDFs</h4>
-                    <p>Save your reports for future reference.</p>
-                </div>
-            </div>
-        </section>
-        <section id="how-it-works" class="py-10 bg-[var(--background-color)]">
-            <h3 class="text-3xl font-bold text-center mb-8">How It Works</h3>
-            <ol class="list-decimal list-inside text-center">
-                <li>Enter your domain name</li>
-                <li>Receive a detailed report</li>
-                <li>Make informed decisions</li>
-            </ol>
         </section>
         <section id="domain-form" class="py-10" style="display: none;">
             <form class="max-w-md mx-auto">
@@ -105,6 +68,7 @@
                 <div id="who-to-sell-to" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
                 <div id="metrics" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
                 <div id="comparable-sales" class="p-4 bg-[var(--background-color)] rounded shadow col-span-2"></div>
+                <canvas id="metrics-chart" class="mt-8"></canvas>
             </div>
             <button id="download-report" class="mt-8 mx-auto block">Download Report</button>
             <button id="back-to-form" class="mt-4 mx-auto block bg-gray-500">Analyze Another Domain</button>
@@ -115,7 +79,7 @@
         </div>
     </main>
     <footer class="p-4 text-center bg-[var(--background-color)]">
-        <p>&copy; 2023 Domain Squeeze</p>
+        <p>© 2023 Domain Squeeze</p>
     </footer>
     <script>
         // Theme toggle
@@ -207,11 +171,11 @@
                     data.estimatedValue = line.replace('Estimated Value:', '').trim();
                 } else if (line.startsWith('Best Use Case:')) {
                     data.bestUseCase = line.replace('Best Use Case:', '').trim();
-                } else if (line.startsWith('Who to Sell To:')) {
-                    data.whoToSellTo = line.replace('Who to Sell To:', '').trim();
+                } else if (line.startsWith('Potential Buyers:')) {
+                    data.whoToSellTo = line.replace('Potential Buyers:', '').trim();
                 } else if (line.startsWith('Domain Metrics:')) {
                     currentSection = 'metrics';
-                } else if (line.startsWith('Comparable Sales:')) {
+                } else if (line.startsWith('Recent Sale Analysis:')) {
                     currentSection = 'comparableSales';
                 } else if (currentSection === 'metrics' && line.trim()) {
                     const [key, value] = line.split(':').map(part => part.trim());
@@ -229,28 +193,43 @@
         function displayResults(data) {
             document.getElementById('estimated-value').innerHTML = `<h3 class="text-xl font-bold">Estimated Value</h3><p>${data.estimatedValue || 'N/A'}</p>`;
             document.getElementById('best-use-case').innerHTML = `<h3 class="text-xl font-bold">Best Use Case</h3><p>${data.bestUseCase || 'N/A'}</p>`;
-            document.getElementById('who-to-sell-to').innerHTML = `<h3 class="text-xl font-bold">Who to Sell To</h3><p>${data.whoToSellTo || 'N/A'}</p>`;
+            document.getElementById('who-to-sell-to').innerHTML = `<h3 class="text-xl font-bold">Potential Buyers</h3><p>${data.whoToSellTo || 'N/A'}</p>`;
 
             let metricsHtml = '<h3 class="text-xl font-bold">Metrics</h3>';
             for (const [key, value] of Object.entries(data.metrics)) {
                 metricsHtml += `<p title="${getMetricExplanation(key)}">${key}: ${value}</p>`;
-                if (key === 'Search Volume') {
-                    const volume = parseInt(value) || 0;
-                    const width = (volume / 10000) * 100; // Assume max 10000
-                    metricsHtml += `<div class="metric-bar mt-1"><div class="metric-fill" style="width: ${width}%"></div></div>`;
-                } else if (key === 'Competition') {
-                    let color = value.toLowerCase() === 'low' ? 'bg-green-500' : value.toLowerCase() === 'medium' ? 'bg-yellow-500' : 'bg-red-500';
-                    metricsHtml += `<div class="${color} h-2 w-1/2 mt-1"></div>`;
-                }
             }
             document.getElementById('metrics').innerHTML = metricsHtml;
 
-            let salesHtml = '<h3 class="text-xl font-bold">Comparable Sales</h3><ul>';
+            let salesHtml = '<h3 class="text-xl font-bold">Recent Sale Analysis</h3><ul>';
             data.comparableSales.forEach(sale => {
                 salesHtml += `<li>${sale.domain}: ${sale.price}</li>`;
             });
             salesHtml += '</ul>';
             document.getElementById('comparable-sales').innerHTML = salesHtml;
+
+            // Chart.js example for metrics
+            const ctx = document.getElementById('metrics-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(data.metrics),
+                    datasets: [{
+                        label: 'Domain Metrics',
+                        data: Object.values(data.metrics).map(val => parseInt(val) || 0),
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
 
             resultsSection.style.display = 'block';
             resultsSection.classList.add('animate__animated', 'animate__fadeIn');
