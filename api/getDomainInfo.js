@@ -13,20 +13,20 @@ module.exports = async (req, res) => {
     }
 
     const prompt = `
-Provide an extremely detailed analysis of the domain '${domain}' for a corporate client looking to maximize its value. Structure the response as follows:
+Provide an extremely detailed analysis of the domain '${domain}' for a corporate client aiming to maximize its value. Structure the response as follows:
 
-- Estimated Value: [Provide a value range, e.g., $X-$Y, and explain the factors influencing it]
-- Best Use Case: [Go into extreme detail about the primary and best use case for this domain. Estimate how much revenue it can generate, what resources (e.g., technology, team, marketing) are needed to achieve that, and how fast it can be done (timeline).]
-- Competition Analysis: [Analyze the competitive landscape for this domain’s niche. Explain how competition can be improved (e.g., SEO strategies, content differentiation). Identify what other companies in this space miss and what they need to succeed.]
+- Estimated Value: [Provide a specific numeric range, e.g., $500-$1,000, and explain factors like keyword demand, TLD rarity, and market trends]
+- Best Use Case: [Go into extreme detail about the primary and best use case for this domain. Estimate potential revenue (e.g., $X/month), required resources (e.g., tech stack, team size, marketing budget), and timeline (e.g., 3-6 months to profitability). Include SEO strategies, content ideas, and monetization methods.]
+- Competition Analysis: [Analyze the competitive landscape for this domain’s niche. Detail how to outperform competitors (e.g., better UX, unique content). Identify what competitors miss and what they need to succeed.]
 - Domain Metrics:
   - Search Volume: [Estimated monthly searches]
   - Competition: [Low/Medium/High]
-  - Related Keywords: [List of relevant keywords]
-- Potential Buyers: [Provide a table of at least 3 companies that might be interested in buying the domain. Include company name, a realistic contact person (e.g., Marketing Director), simulated contact info (e.g., email like john.doe@company.com or phone like +1-XXX-XXX-XXXX), and a compelling reason they would want the domain. Use this format: Company|Contact Person|Contact Info|Reason]
-- Potential Partnerships: [Provide a table of at least 3 companies that would be interested in a partnership (e.g., co-marketing, content collaboration). Include company name, a realistic contact person, simulated contact info, and a reason for partnership. Use this format: Company|Contact Person|Contact Info|Reason]
-- Relevant APIs: [List at least 3 APIs that can be leveraged to enhance a platform built on this domain, with descriptions of how they can be used. Format as: API Name: Description]
+  - Related Keywords: [List of 5-10 keywords]
+- Potential Buyers: [List at least 3 companies interested in buying. Include: Company|Website|Contact Page|Reason. Use real company websites (e.g., https://company.com) and contact pages (e.g., https://company.com/contact).]
+- Potential Partnerships: [List at least 3 companies for partnerships. Include: Company|Website|Contact Page|Reason. Use real company websites and contact pages.]
+- Relevant APIs: [List 3+ APIs to enhance a platform on this domain. Format as: API Name: Description (e.g., how it integrates).]
 
-Ensure all contact information is plausible and fits the company profile, even if simulated, based on typical industry patterns (e.g., marketing or sales contacts). Provide as much actionable detail as possible to maximize the domain’s perceived value.
+Ensure all data is actionable and detailed. If exact contact info isn’t available, provide company websites and contact pages. Never return "N/A" for Estimated Value—provide a fallback range if unsure.
 `;
 
     try {
@@ -39,18 +39,16 @@ Ensure all contact information is plausible and fits the company profile, even i
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: prompt }],
-                max_tokens: 1000 // Increased for detailed response
+                max_tokens: 1500 // Increased for detailed output
             })
         });
 
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`OpenAI API request failed: ${errorText}`);
+            throw new Error('OpenAI API request failed');
         }
 
         const data = await response.json();
-        const content = data.choices[0].message.content;
-        res.status(200).json({ content });
+        res.status(200).json({ content: data.choices[0].message.content });
     } catch (error) {
         console.error('API Error:', error);
         res.status(500).json({ error: error.message });
