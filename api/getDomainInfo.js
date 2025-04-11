@@ -13,24 +13,24 @@ module.exports = async (req, res) => {
     }
 
     const prompt = `
-Imagine you’re a domain valuation and development expert analyzing '${domain}' for a client who wants to maximize its potential. Provide a detailed report structured as follows, ensuring every section is filled with actionable insights. If unsure, make educated guesses based on typical domain trends and explain your reasoning.
+Imagine you’re a domain expert analyzing '${domain}' for a client. Provide a detailed report:
 
-- Estimated Value: [Hypothetically, what would this domain be worth on the market? Provide a specific numeric range, e.g., $500-$1,000, based on factors like keyword strength, TLD appeal, and niche demand. Explain your logic.]
-- Best Use Case: [Describe in extreme detail the primary and best use case for '${domain}'. Estimate potential revenue (e.g., $X/month), required resources (e.g., tech stack like React+Firebase, 3-person team, $5k marketing budget), and timeline (e.g., 3-6 months to profitability). Include SEO strategies, content ideas, and monetization methods like ads or e-commerce.]
-- Build It Prompt: [Provide a detailed prompt the user can copy into an AI studio (e.g., Replit or Firebase) to build the best use case for '${domain}'. Include: 1) Frontend (React, Tailwind), 2) Backend (Firebase), 3) Features (e.g., listings, payments via Stripe), 4) Resources (tech stack, team, budget), 5) Deployment (Firebase Hosting). Tailor it to the Best Use Case above.]
-- SEO Audit: [Suggest 5-10 keywords, backlink strategies (e.g., guest posts on niche blogs), and content ideas (e.g., blog posts, landing pages) tailored to '${domain}'.]
-- Market Trends: [Highlight 2-3 current industry trends relevant to '${domain}’s niche, e.g., "e-commerce growth" or "AI adoption".]
-- Domain History: [Suggest checking historical data with tools like WHOIS (https://whois.domaintools.com/${domain}) and archive.org (https://archive.org/web/). Provide a brief hypothetical history if no data is assumed.]
-- Competition Analysis: [Analyze the competitive landscape for '${domain}’s niche. Detail how to outperform competitors (e.g., better UX, unique content). Identify 2-3 gaps competitors miss and how to exploit them.]
+- Estimated Value: [Give a numeric range, e.g., $500-$1,000, with reasoning.]
+- Best Use Case: [Detail the best use for '${domain}', e.g., revenue ($X/month), resources (tech stack, team, budget), timeline (e.g., 3-6 months).]
+- Build It Prompt: [Prompt for an AI studio to build the best use case for '${domain}'. Include React+Tailwind frontend, Firebase backend, features (e.g., listings, Stripe payments), resources, and Firebase deployment.]
+- SEO Audit: [5-10 keywords, backlink strategies, content ideas.]
+- Market Trends: [2-3 trends relevant to '${domain}'.]
+- Domain History: [Suggest WHOIS (https://whois.domaintools.com/${domain}) and archive.org (https://archive.org/web/).]
+- Competition Analysis: [Competitive landscape, gaps to exploit.]
 - Domain Metrics:
-  - Search Volume: [Estimate monthly searches, e.g., 1,000-5,000]
+  - Search Volume: [Estimate, e.g., 1,000-5,000]
   - Competition: [Low/Medium/High]
-  - Related Keywords: [List 5-10 keywords]
-- Potential Buyers: [List 3+ companies interested in buying. Format: Company|Website|Contact Page|Reason. Use real websites (e.g., https://company.com) and contact pages (e.g., https://company.com/contact).]
-- Potential Partnerships: [List 3+ companies for partnerships. Format: Company|Website|Contact Page|Reason.]
-- Relevant APIs: [List 3+ APIs to enhance a platform on '${domain}'. Format: API Name: Description.]
+  - Related Keywords: [5-10 keywords]
+- Potential Buyers: [3+ companies: Company|Website|Contact Page|Reason.]
+- Potential Partnerships: [3+ companies: Company|Website|Contact Page|Reason.]
+- Relevant APIs: [3+ APIs: API Name: Description.]
 
-Ensure every section has concrete, actionable data. For Estimated Value, always provide a numeric range and justification, even if hypothetical. Tailor the Build It Prompt to the specific Best Use Case provided.
+Always provide concrete data, even if hypothetical.
 `;
 
     try {
@@ -43,15 +43,18 @@ Ensure every section has concrete, actionable data. For Estimated Value, always 
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: prompt }],
-                max_tokens: 2500 // Increased for build prompt
+                max_tokens: 2000
             })
         });
 
+        const responseText = await response.text();
+        console.log('OpenAI Response:', responseText); // Debug
+
         if (!response.ok) {
-            throw new Error('OpenAI API request failed');
+            throw new Error(`OpenAI API failed: ${responseText}`);
         }
 
-        const data = await response.json();
+        const data = JSON.parse(responseText);
         res.status(200).json({ content: data.choices[0].message.content });
     } catch (error) {
         console.error('API Error:', error);
