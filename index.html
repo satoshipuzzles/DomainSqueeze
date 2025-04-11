@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Domain Squeeze</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <style>
         :root {
             --background-color: #121212;
@@ -16,31 +19,18 @@
             --background-color: #ffffff;
             --text-color: #121212;
             --primary-color: #6200ee;
-            --secondary-color: #018786;
+            --secondary-color: #vista;
         }
         body {
             background-color: var(--background-color);
             color: var(--text-color);
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
             transition: background-color 0.3s, color 0.3s;
         }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid var(--primary-color);
-        }
-        h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
         button {
-            padding: 0.5rem 1rem;
             background-color: var(--primary-color);
             color: var(--text-color);
+            padding: 0.5rem 1rem;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -49,84 +39,84 @@
         button:hover {
             background-color: var(--secondary-color);
         }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 2rem 0;
-        }
-        label {
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
-        }
-        input {
-            padding: 0.5rem;
-            margin: 0.5rem 0;
-            width: 80%;
-            max-width: 300px;
-            border: 1px solid var(--primary-color);
+        .metric-bar {
+            background-color: #4b5563;
+            height: 8px;
             border-radius: 4px;
-            background-color: var(--background-color);
-            color: var(--text-color);
+            overflow: hidden;
         }
-        #results {
-            margin: 2rem;
-            padding: 1rem;
-            border: 1px solid var(--secondary-color);
-            border-radius: 4px;
-        }
-        #results h2 {
-            margin-top: 0;
-        }
-        #results div {
-            margin: 0.5rem 0;
-        }
-        #loading {
-            text-align: center;
-            font-size: 1.2rem;
-            margin: 2rem;
-        }
-        @media (max-width: 600px) {
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            header button {
-                margin-top: 0.5rem;
-            }
-            form {
-                width: 90%;
-            }
-            input {
-                width: 100%;
-            }
-            #results {
-                margin: 1rem;
-            }
+        .metric-fill {
+            height: 100%;
+            background-color: #3b82f6;
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Domain Squeeze</h1>
+<body class="bg-[var(--background-color)] text-[var(--text-color)]">
+    <header class="p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">Domain Squeeze</h1>
         <button id="theme-toggle">Toggle Theme</button>
     </header>
     <main>
-        <form id="domain-form">
-            <label for="domain">Enter your domain name:</label>
-            <input type="text" id="domain" name="domain" required placeholder="e.g., example.com">
-            <button type="submit">Get Estimate</button>
-        </form>
-        <div id="results" style="display: none;">
-            <h2>Results</h2>
-            <div id="estimated-value"></div>
-            <div id="best-use-case"></div>
-            <div id="who-to-sell-to"></div>
-            <div id="domain-metrics"></div>
-            <button id="download-report">Download Report</button>
+        <section id="hero" class="text-center py-20">
+            <h2 class="text-4xl font-bold mb-4 animate__animated animate__fadeIn">Unlock the True Value of Your Domain</h2>
+            <p class="mb-8 animate__animated animate__fadeIn animate__delay-1s">Get AI-powered insights and metrics for your domain name.</p>
+            <button id="get-started" class="animate__animated animate__fadeIn animate__delay-2s">Get Started</button>
+        </section>
+        <section id="features" class="py-10">
+            <h3 class="text-3xl font-bold text-center mb-8">Features</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                <div class="text-center">
+                    <i class="fas fa-brain fa-3x mb-4 text-[var(--primary-color)]"></i>
+                    <h4 class="text-xl font-bold">AI Analysis</h4>
+                    <p>Leverage advanced AI to analyze your domain.</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-chart-bar fa-3x mb-4 text-[var(--primary-color)]"></i>
+                    <h4 class="text-xl font-bold">Detailed Reports</h4>
+                    <p>Get comprehensive reports with key metrics.</p>
+                </div>
+                <div class="text-center">
+                    <i class="fas fa-download fa-3x mb-4 text-[var(--primary-color)]"></i>
+                    <h4 class="text-xl font-bold">Downloadable PDFs</h4>
+                    <p>Save your reports for future reference.</p>
+                </div>
+            </div>
+        </section>
+        <section id="how-it-works" class="py-10 bg-[var(--background-color)]">
+            <h3 class="text-3xl font-bold text-center mb-8">How It Works</h3>
+            <ol class="list-decimal list-inside text-center">
+                <li>Enter your domain name</li>
+                <li>Receive a detailed report</li>
+                <li>Make informed decisions</li>
+            </ol>
+        </section>
+        <section id="domain-form" class="py-10" style="display: none;">
+            <form class="max-w-md mx-auto">
+                <label for="domain" class="block mb-2">Domain Name</label>
+                <input type="text" id="domain" class="w-full p-2 rounded bg-[var(--background-color)] text-[var(--text-color)] border border-[var(--primary-color)]" placeholder="e.g., example.com">
+                <button type="submit" class="mt-4 w-full">Get Estimate</button>
+            </form>
+        </section>
+        <section id="results" class="py-10" style="display: none;">
+            <h2 class="text-3xl font-bold text-center mb-8">Analysis Report</h2>
+            <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div id="estimated-value" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
+                <div id="best-use-case" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
+                <div id="who-to-sell-to" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
+                <div id="metrics" class="p-4 bg-[var(--background-color)] rounded shadow"></div>
+                <div id="comparable-sales" class="p-4 bg-[var(--background-color)] rounded shadow col-span-2"></div>
+            </div>
+            <button id="download-report" class="mt-8 mx-auto block">Download Report</button>
+            <button id="back-to-form" class="mt-4 mx-auto block bg-gray-500">Analyze Another Domain</button>
+        </section>
+        <div id="loading" class="text-center py-10" style="display: none;">
+            <i class="fas fa-spinner fa-spin fa-3x"></i>
+            <p>Analyzing domain...</p>
         </div>
-        <div id="loading" style="display: none;">Loading...</div>
     </main>
+    <footer class="p-4 text-center bg-[var(--background-color)]">
+        <p>&copy; 2023 Domain Squeeze</p>
+    </footer>
     <script>
         // Theme toggle
         const themeToggle = document.getElementById('theme-toggle');
@@ -134,31 +124,45 @@
             document.body.classList.toggle('light-mode');
         });
 
+        // Navigation
+        const getStartedButton = document.getElementById('get-started');
+        const domainForm = document.getElementById('domain-form');
+        const resultsSection = document.getElementById('results');
+        const loadingDiv = document.getElementById('loading');
+
+        getStartedButton.addEventListener('click', () => {
+            document.getElementById('hero').style.display = 'none';
+            domainForm.style.display = 'block';
+            domainForm.classList.add('animate__animated', 'animate__fadeIn');
+        });
+
+        document.getElementById('back-to-form').addEventListener('click', () => {
+            resultsSection.style.display = 'none';
+            domainForm.style.display = 'block';
+            domainForm.classList.add('animate__animated', 'animate__fadeIn');
+        });
+
         // Form submission
-        const form = document.getElementById('domain-form');
-        form.addEventListener('submit', async (e) => {
+        domainForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const domain = document.getElementById('domain').value;
 
-            // Validate domain
             if (!validateDomain(domain)) {
                 alert('Please enter a valid domain name (e.g., example.com).');
                 return;
             }
 
-            // Show loading, hide results
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('results').style.display = 'none';
+            domainForm.style.display = 'none';
+            loadingDiv.style.display = 'block';
 
             try {
-                console.log('Sending domain to API:', domain);
                 const response = await getDomainInfo(domain);
-                displayResults(response);
+                const data = parseResponse(response);
+                displayResults(data);
             } catch (error) {
-                console.error('Error details:', error);
                 alert('An error occurred: ' + error.message);
             } finally {
-                document.getElementById('loading').style.display = 'none';
+                loadingDiv.style.display = 'none';
             }
         });
 
@@ -179,54 +183,90 @@
             });
 
             if (!response.ok) {
-                const errorText = await response.text();
-                console.log('Error response from server:', errorText);
-                throw new Error('API request failed: ' + errorText);
+                throw new Error('API request failed');
             }
 
             const data = await response.json();
             return data.content;
         }
 
-        // Display results
-        function displayResults(response) {
+        // Parse API response
+        function parseResponse(response) {
             const lines = response.split('\n');
-            let estimatedValue = '';
-            let bestUseCase = '';
-            let whoToSellTo = '';
-            let domainMetrics = '';
+            let data = {
+                estimatedValue: '',
+                bestUseCase: '',
+                whoToSellTo: '',
+                metrics: {},
+                comparableSales: []
+            };
             let currentSection = '';
 
             lines.forEach(line => {
                 if (line.startsWith('Estimated Value:')) {
-                    currentSection = 'estimatedValue';
-                    estimatedValue += line.replace('Estimated Value:', '').trim() + ' ';
+                    data.estimatedValue = line.replace('Estimated Value:', '').trim();
                 } else if (line.startsWith('Best Use Case:')) {
-                    currentSection = 'bestUseCase';
-                    bestUseCase += line.replace('Best Use Case:', '').trim() + ' ';
+                    data.bestUseCase = line.replace('Best Use Case:', '').trim();
                 } else if (line.startsWith('Who to Sell To:')) {
-                    currentSection = 'whoToSellTo';
-                    whoToSellTo += line.replace('Who to Sell To:', '').trim() + ' ';
+                    data.whoToSellTo = line.replace('Who to Sell To:', '').trim();
                 } else if (line.startsWith('Domain Metrics:')) {
-                    currentSection = 'domainMetrics';
-                } else if (currentSection && line.trim()) {
-                    if (currentSection === 'estimatedValue') estimatedValue += line.trim() + ' ';
-                    else if (currentSection === 'bestUseCase') bestUseCase += line.trim() + ' ';
-                    else if (currentSection === 'whoToSellTo') whoToSellTo += line.trim() + ' ';
-                    else if (currentSection === 'domainMetrics') domainMetrics += line.trim() + ' ';
+                    currentSection = 'metrics';
+                } else if (line.startsWith('Comparable Sales:')) {
+                    currentSection = 'comparableSales';
+                } else if (currentSection === 'metrics' && line.trim()) {
+                    const [key, value] = line.split(':').map(part => part.trim());
+                    data.metrics[key] = value;
+                } else if (currentSection === 'comparableSales' && line.trim()) {
+                    const [domain, price] = line.split(':').map(part => part.trim());
+                    data.comparableSales.push({ domain, price });
                 }
             });
 
-            document.getElementById('estimated-value').innerText = `Estimated Value: ${estimatedValue.trim()}`;
-            document.getElementById('best-use-case').innerText = `Best Use Case: ${bestUseCase.trim()}`;
-            document.getElementById('who-to-sell-to').innerText = `Who to Sell To: ${whoToSellTo.trim()}`;
-            document.getElementById('domain-metrics').innerText = `Domain Metrics: ${domainMetrics.trim()}`;
-            document.getElementById('results').style.display = 'block';
+            return data;
+        }
+
+        // Display results
+        function displayResults(data) {
+            document.getElementById('estimated-value').innerHTML = `<h3 class="text-xl font-bold">Estimated Value</h3><p>${data.estimatedValue || 'N/A'}</p>`;
+            document.getElementById('best-use-case').innerHTML = `<h3 class="text-xl font-bold">Best Use Case</h3><p>${data.bestUseCase || 'N/A'}</p>`;
+            document.getElementById('who-to-sell-to').innerHTML = `<h3 class="text-xl font-bold">Who to Sell To</h3><p>${data.whoToSellTo || 'N/A'}</p>`;
+
+            let metricsHtml = '<h3 class="text-xl font-bold">Metrics</h3>';
+            for (const [key, value] of Object.entries(data.metrics)) {
+                metricsHtml += `<p title="${getMetricExplanation(key)}">${key}: ${value}</p>`;
+                if (key === 'Search Volume') {
+                    const volume = parseInt(value) || 0;
+                    const width = (volume / 10000) * 100; // Assume max 10000
+                    metricsHtml += `<div class="metric-bar mt-1"><div class="metric-fill" style="width: ${width}%"></div></div>`;
+                } else if (key === 'Competition') {
+                    let color = value.toLowerCase() === 'low' ? 'bg-green-500' : value.toLowerCase() === 'medium' ? 'bg-yellow-500' : 'bg-red-500';
+                    metricsHtml += `<div class="${color} h-2 w-1/2 mt-1"></div>`;
+                }
+            }
+            document.getElementById('metrics').innerHTML = metricsHtml;
+
+            let salesHtml = '<h3 class="text-xl font-bold">Comparable Sales</h3><ul>';
+            data.comparableSales.forEach(sale => {
+                salesHtml += `<li>${sale.domain}: ${sale.price}</li>`;
+            });
+            salesHtml += '</ul>';
+            document.getElementById('comparable-sales').innerHTML = salesHtml;
+
+            resultsSection.style.display = 'block';
+            resultsSection.classList.add('animate__animated', 'animate__fadeIn');
+        }
+
+        // Metric explanations
+        function getMetricExplanation(metric) {
+            const explanations = {
+                'Search Volume': 'Estimated monthly search volume for the domain\'s keywords.',
+                'Competition': 'Level of competition for the domain\'s keywords (Low, Medium, High).'
+            };
+            return explanations[metric] || '';
         }
 
         // Download report as PDF
-        const downloadButton = document.getElementById('download-report');
-        downloadButton.addEventListener('click', () => {
+        document.getElementById('download-report').addEventListener('click', () => {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.text('Domain Squeeze Report', 10, 10);
@@ -234,7 +274,8 @@
             doc.text(document.getElementById('estimated-value').innerText, 10, 30);
             doc.text(document.getElementById('best-use-case').innerText, 10, 40);
             doc.text(document.getElementById('who-to-sell-to').innerText, 10, 50);
-            doc.text(document.getElementById('domain-metrics').innerText, 10, 60);
+            doc.text(document.getElementById('metrics').innerText, 10, 60);
+            doc.text(document.getElementById('comparable-sales').innerText, 10, 70);
             doc.save('domain_report.pdf');
         });
     </script>
