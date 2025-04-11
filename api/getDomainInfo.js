@@ -22,9 +22,11 @@ Provide an extremely detailed analysis of the domain '${domain}' for a corporate
   - Search Volume: [Estimated monthly searches]
   - Competition: [Low/Medium/High]
   - Related Keywords: [List of relevant keywords]
-- Potential Buyers: [Provide a table of companies that might be interested in buying the domain. Include company name, contact person, contact info (email or phone), and a compelling reason they would want the domain. Use this format: Company|Contact Person|Contact Info|Reason]
-- Potential Partnerships: [Provide a table of companies that would be interested in a partnership (e.g., co-marketing, content collaboration). Include company name, contact person, contact info, and a reason for partnership. Use this format: Company|Contact Person|Contact Info|Reason]
-- Relevant APIs: [List APIs that can be leveraged to enhance a platform built on this domain, with descriptions of how they can be used. Format as: API Name: Description]
+- Potential Buyers: [Provide a table of at least 3 companies that might be interested in buying the domain. Include company name, a realistic contact person (e.g., Marketing Director), simulated contact info (e.g., email like john.doe@company.com or phone like +1-XXX-XXX-XXXX), and a compelling reason they would want the domain. Use this format: Company|Contact Person|Contact Info|Reason]
+- Potential Partnerships: [Provide a table of at least 3 companies that would be interested in a partnership (e.g., co-marketing, content collaboration). Include company name, a realistic contact person, simulated contact info, and a reason for partnership. Use this format: Company|Contact Person|Contact Info|Reason]
+- Relevant APIs: [List at least 3 APIs that can be leveraged to enhance a platform built on this domain, with descriptions of how they can be used. Format as: API Name: Description]
+
+Ensure all contact information is plausible and fits the company profile, even if simulated, based on typical industry patterns (e.g., marketing or sales contacts). Provide as much actionable detail as possible to maximize the domain’s perceived value.
 `;
 
     try {
@@ -37,7 +39,7 @@ Provide an extremely detailed analysis of the domain '${domain}' for a corporate
             body: JSON.stringify({
                 model: 'gpt-3.5-turbo',
                 messages: [{ role: 'user', content: prompt }],
-                max_tokens: 1000 // Increased to handle detailed response
+                max_tokens: 1000 // Increased for detailed response
             })
         });
 
